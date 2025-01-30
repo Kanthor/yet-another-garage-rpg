@@ -11,13 +11,13 @@ const location_types = {};
 
 class Location {
     constructor({
-                name, 
+                name,
                 id,
-                description, 
-                connected_locations, 
-                is_unlocked = true, 
+                description,
+                connected_locations,
+                is_unlocked = true,
                 is_finished = false,
-                dialogues = [], 
+                dialogues = [],
                 traders = [],
                 types = [], //{type, xp per tick}
                 sleeping = null, //{text to start, xp per tick},
@@ -53,10 +53,10 @@ class Location {
         this.crafting = crafting;
         this.tags = tags;
         this.tags["Safe zone"] = true;
-        /* 
+        /*
         crafting: {
-            is_unlocked: Boolean, 
-            use_text: String, 
+            is_unlocked: Boolean,
+            use_text: String,
             tiers: {
                 crafting: Number,
                 forging: Number,
@@ -70,19 +70,19 @@ class Location {
 }
 
 class Combat_zone {
-    constructor({name, 
+    constructor({name,
                 id,
-                 description, 
+                 description,
                  getDescription,
-                 is_unlocked = true, 
+                 is_unlocked = true,
                  is_finished = false,
                  types = [], //{type, xp_gain}
                  enemy_groups_list = [],
-                 enemies_list = [], 
+                 enemies_list = [],
                  enemy_group_size = [1,1],
                  enemy_count = 30,
                  enemy_stat_variation = 0,
-                 parent_location, 
+                 parent_location,
                  leave_text,
                  first_reward = {},
                  repeatable_reward = {},
@@ -146,13 +146,13 @@ class Combat_zone {
         this.repeatable_reward = repeatable_reward; //reward for each clear, including first; all unlocks should be in this, just in case
 
         this.is_challenge = is_challenge;
-        //challenges can be completed only once 
+        //challenges can be completed only once
 
         //skills and their xp gain on every tick, based on location types;
         this.gained_skills = this.types
             ?.map(type => {return {skill: skills[location_types[type.type].stages[type.stage || 1].related_skill], xp: type.xp_gain}})
             .filter(skill => skill.skill);
-       
+
         const temp_types = this.types.map(type => type.type);
         if(temp_types.includes("bright")) {
             this.light_level = "bright";
@@ -184,7 +184,7 @@ class Combat_zone {
                 enemy_group.push(this.enemies_list[Math.floor(Math.random() * this.enemies_list.length)]);
             }
         }
- 
+
         for(let i = 0; i < enemy_group.length; i++) {
             const enemy = enemy_templates[enemy_group[i]];
             let newEnemy;
@@ -195,8 +195,8 @@ class Combat_zone {
                 const base = 1 + variation;
                 const vary = 2 * variation;
                 newEnemy = new Enemy({
-                                        name: enemy.name, 
-                                        description: enemy.description, 
+                                        name: enemy.name,
+                                        description: enemy.description,
                                         xp_value: enemy.xp_value,
                                         stats: {
                                             health: Math.round(enemy.stats.health * (base - Math.random() * vary)),
@@ -214,8 +214,8 @@ class Combat_zone {
                                     });
 
             } else {
-                newEnemy = new Enemy({name: enemy.name, 
-                    description: enemy.description, 
+                newEnemy = new Enemy({name: enemy.name,
+                    description: enemy.description,
                     xp_value: enemy.xp_value,
                     stats: {
                         health: enemy.stats.health,
@@ -233,7 +233,7 @@ class Combat_zone {
                 });
             }
             newEnemy.is_alive = true;
-            enemies.push(newEnemy); 
+            enemies.push(newEnemy);
         }
         return enemies;
     }
@@ -243,62 +243,62 @@ class Combat_zone {
     get_total_effect() {
         const effects = {multipliers: {}};
         const hero_effects = {multipliers: {}};
-        
+
         //iterate over types of location
         for(let i = 0; i < this.types.length; i++) {
             const type = location_types[this.types[i].type].stages[this.types[i].stage];
 
-            if(!type.related_skill || !type.effects) { 
-                continue; 
+            if(!type.related_skill || !type.effects) {
+                continue;
             }
 
-            //iterate over effects each type has 
+            //iterate over effects each type has
             //(ok there's really just only 3 that make sense: attack points, evasion points, strength, though maybe also attack speed? mainly the first 2 anyway)
-            Object.keys(type.effects.multipliers).forEach((effect) => { 
+            Object.keys(type.effects.multipliers).forEach((effect) => {
 
                 effects.multipliers[effect] = (effects.multipliers[effect] || 1) * type.effects.multipliers[effect];
-                
+
                 hero_effects.multipliers[effect] = (hero_effects.multipliers[effect] || 1) * get_location_type_penalty(this.types[i].type, this.types[i].stage, effect);
             })
         }
 
-        
+
 
         return {base_penalty: effects, hero_penalty: hero_effects};
     }
 }
 
 class Challenge_zone extends Combat_zone {
-    constructor({name, 
-        description, 
+    constructor({name,
+        description,
         getDescription,
-        is_unlocked = true, 
+        is_unlocked = true,
         types = [], //{type, xp_gain}
         enemy_groups_list = [],
-        enemies_list = [], 
+        enemies_list = [],
         enemy_group_size = [1,1],
         enemy_count = 30,
-        parent_location, 
+        parent_location,
         leave_text,
         first_reward = {},
         repeatable_reward = {},
         otherUnlocks,
         is_finished,
         unlock_text,
-       }) 
+       })
     {
         super(
-            {   
-                name, 
-                description, 
-                getDescription, 
-                is_unlocked, 
-                types, 
-                enemy_groups_list, 
-                enemies_list, 
-                enemy_group_size, 
-                enemy_count, 
-                enemy_stat_variation: 0, 
+            {
+                name,
+                description,
+                getDescription,
+                is_unlocked,
+                types,
+                enemy_groups_list,
+                enemies_list,
+                enemy_group_size,
+                enemy_count,
+                enemy_stat_variation: 0,
                 parent_location,
                 leave_text,
                 first_reward,
@@ -313,10 +313,10 @@ class Challenge_zone extends Combat_zone {
 }
 
 class LocationActivity{
-    constructor({activity_name, 
-                 starting_text, 
+    constructor({activity_name,
+                 starting_text,
                  get_payment = ()=>{return 1},
-                 is_unlocked = true, 
+                 is_unlocked = true,
                  working_period = 60,
                  infinite = false,
                  availability_time,
@@ -324,7 +324,7 @@ class LocationActivity{
                  unlock_text,
                  gained_resources,
                  require_tool = true,
-                 }) 
+                 })
     {
         this.activity_name = activity_name; //name of activity from activities.js
         this.starting_text = starting_text; //text displayed on button to start action
@@ -341,12 +341,12 @@ class LocationActivity{
             throw new Error("LocationActivities that are not infinitely available, require a specified time of availability!");
         }
         this.availability_time = availability_time; //if not infinite -> hours between which it's available
-        
+
         this.skill_xp_per_tick = skill_xp_per_tick; //skill xp gained per game tick (default -> 1 in-game minute)
 
         this.require_tool = require_tool; //if false, can be started without tool equipped
 
-        this.gained_resources = gained_resources; 
+        this.gained_resources = gained_resources;
         //{scales_with_skill: boolean, resource: [{name, ammount: [[min,max], [min,max]], chance: [min,max]}], time_period: [min,max], skill_required: [min_efficiency, max_efficiency]}
         //every 2-value array is oriented [starting_value, value_with_required_skill_level], except for subarrays of ammount (which are for randomizing gained item count) and for skill_required
         //                                                                                   (ammount array itself follows the mentioned orientation)
@@ -398,7 +398,7 @@ class LocationAction {
         this.failure_text = failure_text; //text displayed on failure
         this.success_text = success_text; //text displayed on success
                                           //if action is supposed to be "impossible" for narrative purposes, just make it finish without unlocks and with text that says it failed
-        this.requirements = requirements; //things needed to succeed {stats, items, money} 
+        this.requirements = requirements; //things needed to succeed {stats, items, money}
         this.rewards = rewards; //mostly unlocks: {} but could be some other things
         this.completed = false;
         this.attempt_duration = attempt_duration; //0 means instantaneous, otherwise there's a progress bar
@@ -424,12 +424,12 @@ class LocationType{
             if(!skills[related_skill]) {
                 throw new Error(`No such skill as "${related_skill}"`);
             }
-            else { 
+            else {
                 this.related_skill = related_skill; //one per each; skill xp defined in location/combat_zone
             }
         }
         this.stages = stages; //up to 3
-        /* 
+        /*
         >number<: {
             description,
             related_skill,
@@ -441,7 +441,7 @@ class LocationType{
 }
 
 function get_location_type_penalty(type, stage, stat) {
-    
+
     const skill = skills[location_types[type].stages[stage].related_skill];
 
     const base = location_types[type].stages[stage].effects.multipliers[stat];
@@ -451,7 +451,7 @@ function get_location_type_penalty(type, stage, stat) {
 
 //create location types
 (function(){
-    
+
     location_types["bright"] = new LocationType({
         name: "bright",
         stages: {
@@ -627,17 +627,17 @@ function get_location_type_penalty(type, stage, stat) {
 })();
 
 //create locations and zones
-(function(){ 
-    locations["Village"] = new Location({ 
-        connected_locations: [], 
+(function(){
+    locations["Village"] = new Location({
+        connected_locations: [],
         getDescription: function() {
-            if(locations["Infested field"].enemy_groups_killed >= 5 * locations["Infested field"].enemy_count) { 
+            if(locations["Infested field"].enemy_groups_killed >= 5 * locations["Infested field"].enemy_count) {
                 return "Medium-sized village, built next to a small river at the foot of the mountains. It's surrounded by many fields, a few of them infested by huge rats, which, while an annoyance, don't seem possible to fully eradicate. Other than that, there's nothing interesting around";
             }
             else if(locations["Infested field"].enemy_groups_killed >= 2 * locations["Infested field"].enemy_count) {
                 return "Medium-sized village, built next to a small river at the foot of the mountains. It's surrounded by many fields, many of them infested by huge rats. Other than that, there's nothing interesting around";
             } else {
-                return "Medium-sized village, built next to a small river at the foot of the mountains. It's surrounded by many fields, most of them infested by huge rats. Other than that, there's nothing interesting around"; 
+                return "Medium-sized village, built next to a small river at the foot of the mountains. It's surrounded by many fields, most of them infested by huge rats. Other than that, there's nothing interesting around";
             }
         },
         getBackgroundNoises: function() {
@@ -654,16 +654,16 @@ function get_location_type_penalty(type, stage, stat) {
                 noises.push("♫♫ Heigh ho, heigh ho, it's off to work I go~ ♫♫", "Cock-a-doodle-doo!");
             } else if(current_game_time.hour > 18 && current_game_time.hour < 22) {
                 noises.push("♫♫ Heigh ho, heigh ho, it's home from work I go~ ♫♫");
-            } 
+            }
 
             return noises;
         },
         dialogues: ["village elder", "village guard", "old craftsman"],
         traders: ["village trader"],
-        name: "Village", 
+        name: "Village",
         crafting: {
-            is_unlocked: true, 
-            use_text: "Try to craft something", 
+            is_unlocked: true,
+            use_text: "Try to craft something",
             tiers: {
                 crafting: 1,
                 forging: 1,
@@ -688,13 +688,13 @@ function get_location_type_penalty(type, stage, stat) {
     //remember to always add it like that, otherwise travel will be possible only in one direction and location might not even be reachable
 
     locations["Infested field"] = new Combat_zone({
-        description: "Field infested with wolf rats. You can see the grain stalks move as these creatures scurry around.", 
-        enemy_count: 15, 
+        description: "Field infested with wolf rats. You can see the grain stalks move as these creatures scurry around.",
+        enemy_count: 15,
         enemies_list: ["Starving wolf rat", "Wolf rat"],
         types: [{type: "open", stage: 1, xp_gain: 1}],
         enemy_stat_variation: 0.1,
-        is_unlocked: false, 
-        name: "Infested field", 
+        is_unlocked: false,
+        name: "Infested field",
         parent_location: locations["Village"],
         first_reward: {
             xp: 10,
@@ -708,16 +708,16 @@ function get_location_type_penalty(type, stage, stat) {
     });
     locations["Village"].connected_locations.push({location: locations["Infested field"]});
 
-    locations["Nearby cave"] = new Location({ 
-        connected_locations: [{location: locations["Village"], custom_text: "Go outside and to the village"}], 
+    locations["Nearby cave"] = new Location({
+        connected_locations: [{location: locations["Village"], custom_text: "Go outside and to the village"}],
         getDescription: function() {
-            if(locations["Pitch black tunnel"].enemy_groups_killed >= locations["Pitch black tunnel"].enemy_count) { 
+            if(locations["Pitch black tunnel"].enemy_groups_killed >= locations["Pitch black tunnel"].enemy_count) {
                 return "A big cave near the village, once used as a storeroom. Groups of fluorescent mushrooms cover the walls, providing a dim light. Your efforts have secured a decent space and many of the tunnels. It seems like you almost reached the deepest part.";
             }
-            else if(locations["Hidden tunnel"].enemy_groups_killed >= locations["Hidden tunnel"].enemy_count) { 
+            else if(locations["Hidden tunnel"].enemy_groups_killed >= locations["Hidden tunnel"].enemy_count) {
                 return "A big cave near the village, once used as a storeroom. Groups of fluorescent mushrooms cover the walls, providing a dim light. Your efforts have secured a major space and some tunnels, but there are still more places left to clear out.";
             }
-            else if(locations["Cave depths"].enemy_groups_killed >= locations["Cave depths"].enemy_count) { 
+            else if(locations["Cave depths"].enemy_groups_killed >= locations["Cave depths"].enemy_count) {
                 return "A big cave near the village, once used as a storeroom. Groups of fluorescent mushrooms cover the walls, providing a dim light. Your efforts have secured a decent space and even a few tunnels, yet somehow you can still hear the sounds of the wolf rats.";
             }
             else if(locations["Cave room"].enemy_groups_killed >= locations["Cave room"].enemy_count) {
@@ -737,14 +737,14 @@ function get_location_type_penalty(type, stage, stat) {
     //remember to always add it like that, otherwise travel will be possible only in one direction and location might not even be reachable
 
     locations["Cave room"] = new Combat_zone({
-        description: "It's full of rats. At least the glowing mushrooms provide some light.", 
-        enemy_count: 25, 
+        description: "It's full of rats. At least the glowing mushrooms provide some light.",
+        enemy_count: 25,
         types: [{type: "narrow", stage: 1,  xp_gain: 3}, {type: "bright", stage:1}],
         enemies_list: ["Wolf rat"],
         enemy_group_size: [2,3],
         enemy_stat_variation: 0.2,
-        is_unlocked: true, 
-        name: "Cave room", 
+        is_unlocked: true,
+        name: "Cave room",
         leave_text: "Go back to entrance",
         parent_location: locations["Nearby cave"],
         first_reward: {
@@ -759,14 +759,14 @@ function get_location_type_penalty(type, stage, stat) {
     locations["Nearby cave"].connected_locations.push({location: locations["Cave room"]});
 
     locations["Cave depths"] = new Combat_zone({
-        description: "It's dark. And full of rats.", 
-        enemy_count: 50, 
+        description: "It's dark. And full of rats.",
+        enemy_count: 50,
         types: [{type: "narrow", stage: 1,  xp_gain: 3}, {type: "dark", stage: 2, xp_gain: 3}],
         enemies_list: ["Wolf rat"],
         enemy_group_size: [5,8],
         enemy_stat_variation: 0.2,
-        is_unlocked: false, 
-        name: "Cave depths", 
+        is_unlocked: false,
+        name: "Cave depths",
         leave_text: "Climb out",
         parent_location: locations["Nearby cave"],
         first_reward: {
@@ -778,16 +778,16 @@ function get_location_type_penalty(type, stage, stat) {
             xp: 15,
         }
     });
-    
+
     locations["Hidden tunnel"] = new Combat_zone({
-        description: "There is, in fact, even more rats here.", 
-        enemy_count: 50, 
+        description: "There is, in fact, even more rats here.",
+        enemy_count: 50,
         types: [{type: "narrow", stage: 1,  xp_gain: 3}, {type: "dark", stage: 3, xp_gain: 1}],
         enemies_list: ["Elite wolf rat"],
         enemy_group_size: [2,2],
         enemy_stat_variation: 0.2,
-        is_unlocked: false, 
-        name: "Hidden tunnel", 
+        is_unlocked: false,
+        name: "Hidden tunnel",
         leave_text: "Retreat for now",
         parent_location: locations["Nearby cave"],
         first_reward: {
@@ -801,14 +801,14 @@ function get_location_type_penalty(type, stage, stat) {
         unlock_text: "As the wall falls apart, you find yourself in front of a new tunnel, leading even deeper. And of course, it's full of wolf rats."
     });
     locations["Pitch black tunnel"] = new Combat_zone({
-        description: "There is no light here. Only rats.", 
-        enemy_count: 50, 
+        description: "There is no light here. Only rats.",
+        enemy_count: 50,
         types: [{type: "narrow", stage: 1,  xp_gain: 6}, {type: "dark", stage: 3, xp_gain: 3}],
         enemies_list: ["Elite wolf rat"],
         enemy_group_size: [6,8],
         enemy_stat_variation: 0.2,
-        is_unlocked: false, 
-        name: "Pitch black tunnel", 
+        is_unlocked: false,
+        name: "Pitch black tunnel",
         leave_text: "Retreat for now",
         parent_location: locations["Nearby cave"],
         first_reward: {
@@ -822,14 +822,14 @@ function get_location_type_penalty(type, stage, stat) {
     });
 
     locations["Mysterious gate"] = new Combat_zone({
-        description: "It's dark. And full of rats.", 
-        enemy_count: 50, 
+        description: "It's dark. And full of rats.",
+        enemy_count: 50,
         types: [{type: "dark", stage: 3, xp_gain: 5}],
         enemies_list: ["Elite wolf rat guardian"],
         enemy_group_size: [6,8],
         enemy_stat_variation: 0.2,
         is_unlocked: false,
-        name: "Mysterious gate", 
+        name: "Mysterious gate",
         leave_text: "Get away",
         parent_location: locations["Nearby cave"],
         first_reward: {
@@ -843,12 +843,12 @@ function get_location_type_penalty(type, stage, stat) {
 
 
     locations["Nearby cave"].connected_locations.push(
-        {location: locations["Cave depths"]}, 
-        {location: locations["Hidden tunnel"], custom_text: "Enter the hidden tunnel"}, 
+        {location: locations["Cave depths"]},
+        {location: locations["Hidden tunnel"], custom_text: "Enter the hidden tunnel"},
         {location: locations["Pitch black tunnel"], custom_text: "Go into the pitch black tunnel"},
         {location: locations["Mysterious gate"], custom_text: "Go to the mysterious gate"}),
 
-    locations["Forest road"] = new Location({ 
+    locations["Forest road"] = new Location({
         connected_locations: [{location: locations["Village"]}],
         description: "Old trodden road leading through a dark forest, the only path connecting village to the town. You can hear some animals from the surrounding woods.",
         name: "Forest road",
@@ -862,11 +862,11 @@ function get_location_type_penalty(type, stage, stat) {
     locations["Village"].connected_locations.push({location: locations["Forest road"], custom_text: "Leave the village"});
 
     locations["Forest"] = new Combat_zone({
-        description: "Forest surrounding the village, a dangerous place", 
+        description: "Forest surrounding the village, a dangerous place",
         enemies_list: ["Starving wolf", "Young wolf"],
-        enemy_count: 30, 
+        enemy_count: 30,
         enemy_stat_variation: 0.2,
-        name: "Forest", 
+        name: "Forest",
         parent_location: locations["Forest road"],
         first_reward: {
             xp: 40,
@@ -880,13 +880,13 @@ function get_location_type_penalty(type, stage, stat) {
     locations["Forest road"].connected_locations.push({location: locations["Forest"], custom_text: "Leave the safe path"});
 
     locations["Deep forest"] = new Combat_zone({
-        description: "Deeper part of the forest, a dangerous place", 
+        description: "Deeper part of the forest, a dangerous place",
         enemies_list: ["Wolf", "Starving wolf", "Young wolf"],
-        enemy_count: 50, 
+        enemy_count: 50,
         enemy_group_size: [2,3],
         enemy_stat_variation: 0.2,
         is_unlocked: false,
-        name: "Deep forest", 
+        name: "Deep forest",
         parent_location: locations["Forest road"],
         first_reward: {
             xp: 70,
@@ -902,11 +902,11 @@ function get_location_type_penalty(type, stage, stat) {
     locations["Forest clearing"] = new Combat_zone({
         description: "A surprisingly big clearing hidden in the northern part of the forest, covered with very tall grass and filled with a mass of wild boars",
         enemies_list: ["Boar"],
-        enemy_count: 50, 
+        enemy_count: 50,
         enemy_group_size: [4,7],
         is_unlocked: false,
         enemy_stat_variation: 0.2,
-        name: "Forest clearing", 
+        name: "Forest clearing",
         types: [{type: "open", stage: 2, xp_gain: 3}],
         parent_location: locations["Forest road"],
         first_reward: {
@@ -919,7 +919,7 @@ function get_location_type_penalty(type, stage, stat) {
     });
     locations["Forest road"].connected_locations.push({location: locations["Forest clearing"], custom_text: "Go towards the clearing in the north"});
 
-    locations["Town outskirts"] = new Location({ 
+    locations["Town outskirts"] = new Location({
         connected_locations: [{location: locations["Forest road"], custom_text: "Return to the forest"}],
         description: "The town is surrounded by a tall stone wall. The only gate seems to be closed, with a lone guard outside. You can see farms to the north and slums to the south.",
         name: "Town outskirts",
@@ -928,7 +928,7 @@ function get_location_type_penalty(type, stage, stat) {
     });
     locations["Forest road"].connected_locations.push({location: locations["Town outskirts"], custom_text: "Go towards the town"});
 
-    locations["Slums"] = new Location({ 
+    locations["Slums"] = new Location({
         connected_locations: [{location: locations["Town outskirts"]}],
         description: "A wild settlement next to city walls, filled with decaying buildings and criminals",
         name: "Slums",
@@ -946,7 +946,7 @@ function get_location_type_penalty(type, stage, stat) {
             return noises;
         },
     });
-    locations["Town farms"] = new Location({ 
+    locations["Town farms"] = new Location({
         connected_locations: [{location: locations["Town outskirts"]}],
         description: "Semi-private farms under jurisdiction of the city council. Full of life and sounds of heavy work.",
         name: "Town farms",
@@ -964,7 +964,7 @@ function get_location_type_penalty(type, stage, stat) {
                 noises.push("♫♫ Heigh ho, heigh ho, it's off to work I go~ ♫♫", "Cock-a-doodle-doo!");
             } else if(current_game_time.hour > 18 && current_game_time.hour < 22) {
                 noises.push("♫♫ Heigh ho, heigh ho, it's home from work I go~ ♫♫");
-            } 
+            }
 
             return noises;
         },
@@ -977,11 +977,11 @@ function get_location_type_penalty(type, stage, stat) {
 (function(){
     locations["Sparring with the village guard (heavy)"] = new Challenge_zone({
         description: "He's showing you a technique that makes his attacks slow but deadly",
-        enemy_count: 1, 
+        enemy_count: 1,
         enemies_list: ["Village guard (heavy)"],
         enemy_group_size: [1,1],
-        is_unlocked: false, 
-        name: "Sparring with the village guard (heavy)", 
+        is_unlocked: false,
+        name: "Sparring with the village guard (heavy)",
         leave_text: "Give up",
         parent_location: locations["Village"],
         first_reward: {
@@ -994,11 +994,11 @@ function get_location_type_penalty(type, stage, stat) {
     });
     locations["Sparring with the village guard (quick)"] = new Challenge_zone({
         description: "He's showing you a technique that makes his attacks slow but deadly",
-        enemy_count: 1, 
+        enemy_count: 1,
         enemies_list: ["Village guard (quick)"],
         enemy_group_size: [1,1],
-        is_unlocked: false, 
-        name: "Sparring with the village guard (quick)", 
+        is_unlocked: false,
+        name: "Sparring with the village guard (quick)",
         leave_text: "Give up",
         parent_location: locations["Village"],
         first_reward: {
@@ -1015,14 +1015,14 @@ function get_location_type_penalty(type, stage, stat) {
     );
 
     locations["Suspicious wall"] = new Challenge_zone({
-        description: "It can be broken with enough force, you can feel it", 
-        enemy_count: 1, 
+        description: "It can be broken with enough force, you can feel it",
+        enemy_count: 1,
         types: [],
         enemies_list: ["Suspicious wall"],
         enemy_group_size: [1,1],
         enemy_stat_variation: 0,
-        is_unlocked: false, 
-        name: "Suspicious wall", 
+        is_unlocked: false,
+        name: "Suspicious wall",
         leave_text: "Leave it for now",
         parent_location: locations["Nearby cave"],
         repeatable_reward: {
@@ -1035,14 +1035,14 @@ function get_location_type_penalty(type, stage, stat) {
     locations["Nearby cave"].connected_locations.push({location: locations["Suspicious wall"], custom_text: "Try to break the suspicious wall"});
 
     locations["Fight off the assailant"] = new Challenge_zone({
-        description: "He attacked you out of nowhere", 
-        enemy_count: 1, 
+        description: "He attacked you out of nowhere",
+        enemy_count: 1,
         types: [],
         enemies_list: ["Suspicious man"],
         enemy_group_size: [1,1],
         enemy_stat_variation: 0,
-        is_unlocked: false, 
-        name: "Fight off the assailant", 
+        is_unlocked: false,
+        name: "Fight off the assailant",
         leave_text: "Run away for now",
         parent_location: locations["Slums"],
         repeatable_reward: {
@@ -1066,7 +1066,7 @@ function get_location_type_penalty(type, stage, stat) {
             is_unlocked: false,
             working_period: 60*2,
             availability_time: {start: 6, end: 20},
-            skill_xp_per_tick: 1, 
+            skill_xp_per_tick: 1,
         }),
         "running": new LocationActivity({
             activity_name: "running",
@@ -1113,7 +1113,7 @@ function get_location_type_penalty(type, stage, stat) {
             skill_xp_per_tick: 1,
             is_unlocked: true,
             gained_resources: {
-                resources: [{name: "Piece of rough wood", ammount: [[1,1], [1,3]], chance: [0.3, 1]}], 
+                resources: [{name: "Piece of rough wood", ammount: [[1,1], [1,3]], chance: [0.3, 1]}],
                 time_period: [20, 10],
                 skill_required: [0, 10],
                 scales_with_skill: true,
@@ -1137,7 +1137,7 @@ function get_location_type_penalty(type, stage, stat) {
             skill_xp_per_tick: 1,
             is_unlocked: false,
             gained_resources: {
-                resources: [{name: "Low quality iron ore", ammount: [[1,1], [1,3]], chance: [0.3, 0.7]}], 
+                resources: [{name: "Low quality iron ore", ammount: [[1,1], [1,3]], chance: [0.3, 0.7]}],
                 time_period: [60, 30],
                 skill_required: [0, 10],
                 scales_with_skill: true,
@@ -1151,7 +1151,7 @@ function get_location_type_penalty(type, stage, stat) {
             skill_xp_per_tick: 5,
             is_unlocked: false,
             gained_resources: {
-                resources: [{name: "Iron ore", ammount: [[1,1], [1,3]], chance: [0.1, 0.6]}], 
+                resources: [{name: "Iron ore", ammount: [[1,1], [1,3]], chance: [0.1, 0.6]}],
                 time_period: [90, 40],
                 skill_required: [7, 17],
                 scales_with_skill: true,
@@ -1190,7 +1190,7 @@ function get_location_type_penalty(type, stage, stat) {
                     {name: "Oneberry", ammount: [[1,1], [1,1]], chance: [0.1, 0.5]},
                     {name: "Golmoon leaf", ammount: [[1,1], [1,1]], chance: [0.1, 0.7]},
                     {name: "Belmart leaf", ammount: [[1,1], [1,1]], chance: [0.1, 0.7]}
-                ], 
+                ],
                 time_period: [120, 45],
                 skill_required: [0, 10],
                 scales_with_skill: true,
@@ -1219,7 +1219,7 @@ function get_location_type_penalty(type, stage, stat) {
             gained_resources: {
                 resources: [
                     {name: "Wool", ammount: [[1,1], [1,3]], chance: [0.1, 1]},
-                ], 
+                ],
                 time_period: [120, 60],
                 skill_required: [0, 10],
                 scales_with_skill: true,

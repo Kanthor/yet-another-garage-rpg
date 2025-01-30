@@ -12,26 +12,26 @@ function Game_time(new_time) {
 
     this.go_up = function(how_much) {
         this.minute += how_much || 1;
-        if(this.minute >= 60) 
+        if(this.minute >= 60)
         {
             this.minute = this.minute - 60;
             this.hour += 1;
         }
-    
-        if(this.hour >= 24) 
+
+        if(this.hour >= 24)
         {
             this.hour = this.hour - 24;
-            this.day += 1; 
+            this.day += 1;
             this.day_count += 1;
         }
-    
-        if(this.day > 30) 
+
+        if(this.day > 30)
         {
             this.day = this.day - 30;
             this.month += 1;
         }
-    
-        if(this.month > 12) 
+
+        if(this.month > 12)
         {
             this.month = this.month - 12;
             this.year += 1;
@@ -58,11 +58,11 @@ function Game_time(new_time) {
         switch(this.day_count % 7) {
             case 0:
                 return "Sunday";
-            case 1: 
+            case 1:
                 return "Monday";
             case 2:
                 return "Tuesday";
-            case 3: 
+            case 3:
                 return "Wednesday";
             case 4:
                 return "Thursday";
@@ -71,7 +71,7 @@ function Game_time(new_time) {
             case 6:
                 return "Saturday";
         }
-    }	
+    }
 
 }
 
@@ -86,17 +86,17 @@ Game_time.prototype.toString = function() {
 }
 
 /**
- * 
- * @param {Object} data 
+ *
+ * @param {Object} data
  * @param {Number} data.time {minutes, hours, days, months, years}
  * @param {Boolean} [data.long_names] if it should use "minutes", "hours", etc instead of "m","h"
- * @returns 
+ * @returns
  */
 function format_time(data) { //{time, long_names?}
     if(!data.time) {
         throw "No time passed in arguments!";
     }
-    
+
     if(data.time.minutes >= 60) {
         data.time.hours = data.time.hours + Math.floor(data.time.minutes/60) || Math.floor(data.time.minutes/60);
         data.time.minutes = data.time.minutes % 60;

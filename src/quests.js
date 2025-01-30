@@ -26,7 +26,7 @@ class QuestTask {
 class Quest {
     constructor({
                 quest_name, //for display, can be skipped if getQuestName covers all possibilites
-                quest_id, 
+                quest_id,
                 quest_description, // -||-
                 questline, //questline for grouping or something, skippable
                 quest_tasks = [], //an array of tasks that need to be completed one by one
@@ -116,7 +116,7 @@ quests["Infinite rat saga"] = new Quest({
     quest_description: "",
     quest_tasks: [
         new QuestTask({}),
-        
+
     ]
 });
 */

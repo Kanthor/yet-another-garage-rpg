@@ -3,14 +3,14 @@
 const dialogues = {};
 
 class Dialogue {
-    constructor({ name, 
-                  starting_text = `Talk to the ${name}`, 
-                  ending_text = `Go back`, 
-                  is_unlocked = true, 
-                  is_finished = false, 
-                  textlines = {}, 
+    constructor({ name,
+                  starting_text = `Talk to the ${name}`,
+                  ending_text = `Go back`,
+                  is_unlocked = true,
+                  is_finished = false,
+                  textlines = {},
                   location_name
-    }) 
+    })
     {
         this.name = name; //displayed name, e.g. "Village elder"
         this.starting_text = starting_text;
@@ -40,7 +40,7 @@ class Textline {
                 locks_lines = {},
                 otherUnlocks,
                 required_flags,
-            }) 
+            })
     {
         this.name = name; // displayed option to click, don't make it too long
         this.text = text; // what's shown after clicking
@@ -49,7 +49,7 @@ class Textline {
         this.is_unlocked = is_unlocked;
         this.is_finished = is_finished;
         this.unlocks = unlocks || {};
-        
+
         this.unlocks.textlines = unlocks.textlines || [];
         this.unlocks.locations = unlocks.locations || [];
         this.unlocks.dialogues = unlocks.dialogues || [];
@@ -57,11 +57,11 @@ class Textline {
         this.unlocks.stances = unlocks.stances || [];
         this.unlocks.flags = unlocks.flags || [];
         this.unlocks.items = unlocks.items || []; //not so much unlocks as simply items that player will receive
-        
+
         this.required_flags = required_flags;
 
         this.locks_lines = locks_lines;
-        //related text lines that get locked; might be itself, might be some previous line 
+        //related text lines that get locked; might be itself, might be some previous line
         //e.g. line finishing quest would also lock line like "remind me what I was supposed to do"
         //should be alright if it's limited only to lines in same Dialogue
         //just make sure there won't be Dialogues with ALL lines unavailable
@@ -251,7 +251,7 @@ class Textline {
                 text: "Ahh, I see. Maybe some other time then, when you change your mind, hmm?",
                 is_unlocked: false,
             }),
-            
+
             "remind1": new Textline({
                 name: "Could you remind me how to create equipment for myself?",
                 text: "Ahh, of course. Unless you are talking about something simple like basic clothing, then you will first need to create components that can then be assembled together. "+
@@ -333,7 +333,7 @@ class Textline {
             "heavy": new Textline({
                 name: "So about the heavy stance...",
                 is_unlocked: false,
-                text: `It's usually called "crushing force". As you have seen, it's about putting all your strength in attacks. ` 
+                text: `It's usually called "crushing force". As you have seen, it's about putting all your strength in attacks. `
                 +`It will make your attacks noticeably slower, but it's a perfect solution if you face an enemy that's too tough for normal attacks`,
                 otherUnlocks: () => {
                     if(dialogues["village guard"].textlines["quick"].is_finished) {
@@ -348,7 +348,7 @@ class Textline {
             "wide": new Textline({
                 name: "What's the third technique?",
                 is_unlocked: false,
-                text: `It's usually called "broad arc". Instead of focusing on a single target, you make a wide swing to hit as many as possible. ` 
+                text: `It's usually called "broad arc". Instead of focusing on a single target, you make a wide swing to hit as many as possible. `
                 +`It might work great against groups of weaker enemies, but it will also significantly reduce the power of your attacks and will be even more tiring than the other two stances.`,
                 locks_lines: ["wide"],
                 unlocks: {
@@ -364,21 +364,21 @@ class Textline {
             "enter": new Textline({
                 name: "Hello, can I get in?",
                 text: "The town is currently closed to everyone who isn't a citizen or a guild member. No exceptions.",
-            }), 
+            }),
         }
     });
     dialogues["suspicious man"] = new Dialogue({
         name: "suspicious man",
         textlines: {
-            "hello": new Textline({ 
+            "hello": new Textline({
                 name: "Hello? Why are you looking at me like that?",
                 text: "Y-you! You should be dead! *the man pulls out a dagger*",
                 unlocks: {
                     locations: ["Fight off the assailant"],
                 },
                 locks_lines: ["hello"],
-            }), 
-            "defeated": new Textline({ 
+            }),
+            "defeated": new Textline({
                 name: "What was that about?",
                 is_unlocked: false,
                 text: "I... We... It was my group that robbed you. I thought you came back from your grave for revenge... Please, I don't know anything. "
@@ -387,19 +387,19 @@ class Textline {
                 unlocks: {
                     textlines: [{dialogue: "suspicious man", lines: ["behave"]}],
                 },
-            }), 
-            "behave": new Textline({ 
+            }),
+            "behave": new Textline({
                 name: "Are you behaving yourself?",
                 is_unlocked: false,
                 text: "Y-yes! Please don't beat me again!",
                 locks_lines: ["defeated"],
-            }), 
+            }),
         }
     });
     dialogues["farm supervisor"] = new Dialogue({
         name: "farm supervisor",
         textlines: {
-            "hello": new Textline({ 
+            "hello": new Textline({
                 name: "Hello",
                 text: "Hello stranger",
                 unlocks: {
@@ -452,7 +452,7 @@ class Textline {
                 unlocks: {
                     textlines: [{dialogue: "farm supervisor", lines: ["animals", "fight", "fight0"]}],
                 }
-            }), 
+            }),
             "defeated boars": new Textline({
                 is_unlocked: false,
                 name: "I took care of those boars",
@@ -461,7 +461,7 @@ class Textline {
                 unlocks: {
                     money: 1000,
                 }
-            }), 
+            }),
         }
     });
 })();

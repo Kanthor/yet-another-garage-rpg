@@ -17,7 +17,7 @@ const alchemy_recipes = {items: {}};
     for equipment recipes, there is no success rate in favor of equipment's "quality" property
 
     resulting quality of equipment is based on component quality; 100% (with slight variation) with 100% components and required skill, more at higher levels
-    
+
     overal max quality achievable scales with related skills
 */
 
@@ -82,7 +82,7 @@ class ItemRecipe extends Recipe {
 
     get_is_any_material_present() {
         for(let i = 0; i < this.materials.length; i++) {
-            
+
             if(character.inventory[this.materials[i].material_id]) {
                 return true;
             }
@@ -95,7 +95,7 @@ class ComponentRecipe extends ItemRecipe{
     constructor({
         name,
         id,
-        materials = [], 
+        materials = [],
         is_unlocked = true, //TODO: change to false when unlocking is implemented!
         result, //{item, count, result_name} where result_name is an item_templates key
         component_type,
@@ -236,7 +236,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     if(subcategory === "items") {
         exp_value = Math.max(exp_value,1.5*selected_recipe.recipe_level[1]);
         //maybe scale with materials needed?
-        
+
         if(selected_recipe.recipe_level[1] < skill_level) {
             exp_value = Math.max(1,exp_value * Math.max(0,Math.min(5,(selected_recipe.recipe_level[1]+6-skill_level))/5));
         }
@@ -259,7 +259,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     forging_recipes.components["Short blade"] = new ComponentRecipe({
         name: "Short blade",
         materials: [
-            {material_id: "Low quality iron ingot", count: 2, result_id: "Cheap short iron blade"}, 
+            {material_id: "Low quality iron ingot", count: 2, result_id: "Cheap short iron blade"},
             {material_id: "Iron ingot", count: 2, result_id: "Short iron blade"},
         ],
         item_type: "Component",
@@ -268,7 +268,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     forging_recipes.components["Long blade"] = new ComponentRecipe({
         name: "Long blade",
         materials: [
-            {material_id: "Low quality iron ingot", count: 3, result_id: "Cheap long iron blade"}, 
+            {material_id: "Low quality iron ingot", count: 3, result_id: "Cheap long iron blade"},
             {material_id: "Iron ingot", count: 3, result_id: "Long iron blade"},
         ],
         item_type: "Component",
@@ -277,7 +277,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     forging_recipes.components["Axe head"] = new ComponentRecipe({
         name: "Axe head",
         materials: [
-            {material_id: "Low quality iron ingot", count: 4, result_id: "Cheap iron axe head"}, 
+            {material_id: "Low quality iron ingot", count: 4, result_id: "Cheap iron axe head"},
             {material_id: "Iron ingot", count: 4, result_id: "Iron axe head"},
         ],
         item_type: "Component",
@@ -286,7 +286,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     forging_recipes.components["Hammer head"] = new ComponentRecipe({
         name: "Hammer head",
         materials: [
-            {material_id: "Low quality iron ingot", count: 4, result_id: "Cheap iron hammer head"}, 
+            {material_id: "Low quality iron ingot", count: 4, result_id: "Cheap iron hammer head"},
             {material_id: "Iron ingot", count: 4, result_id: "Iron hammer head"},
         ],
         item_type: "Component",
@@ -355,7 +355,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Shield base"] = new ComponentRecipe({
         name: "Shield base",
         materials: [
-            {material_id: "Processed rough wood", count: 6, result_id: "Crude wooden shield base"}, 
+            {material_id: "Processed rough wood", count: 6, result_id: "Crude wooden shield base"},
             {material_id: "Processed wood", count: 6, result_id: "Wooden shield base"},
         ],
         item_type: "Component",
@@ -366,7 +366,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Shield handle"] = new ComponentRecipe({
         name: "Shield handle",
         materials: [
-            {material_id: "Processed rough wood", count: 4, result_id: "Basic shield handle"}, 
+            {material_id: "Processed rough wood", count: 4, result_id: "Basic shield handle"},
             {material_id: "Processed wood", count: 4, result_id: "Wooden shield handle"},
         ],
         item_type: "Component",
@@ -392,7 +392,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Helmet exterior"] = new ComponentRecipe({
         name: "Helmet exterior",
         materials: [
-            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather helmet armor"}, 
+            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather helmet armor"},
             {material_id: "Piece of boar leather", count: 3, result_id: "Boar leather helmet armor"},
         ],
         item_type: "Component",
@@ -409,11 +409,11 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
         recipe_skill: "Forging",
         component_type: "helmet exterior",
     });
-    
+
     crafting_recipes.components["Chestplate exterior"] = new ComponentRecipe({
         name: "Chestplate exterior",
         materials: [
-            {material_id: "Piece of wolf leather", count: 5, result_id: "Wolf leather chestplate armor"}, 
+            {material_id: "Piece of wolf leather", count: 5, result_id: "Wolf leather chestplate armor"},
             {material_id: "Piece of boar leather", count: 5, result_id: "Boar leather chestplate armor"},
         ],
         item_type: "Component",
@@ -434,7 +434,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Leg armor exterior"] = new ComponentRecipe({
         name: "Leg armor exterior",
         materials: [
-            {material_id: "Piece of wolf leather", count: 4, result_id: "Wolf leather greaves"}, 
+            {material_id: "Piece of wolf leather", count: 4, result_id: "Wolf leather greaves"},
             {material_id: "Piece of boar leather", count: 4, result_id: "Boar leather greaves"},
         ],
         item_type: "Component",
@@ -455,7 +455,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Glove exterior"] = new ComponentRecipe({
         name: "Glove exterior",
         materials: [
-            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather glove armor"}, 
+            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather glove armor"},
             {material_id: "Piece of boar leather", count: 3, result_id: "Boar leather glove armor"},
         ],
         item_type: "Component",
@@ -476,7 +476,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.components["Shoes exterior"] = new ComponentRecipe({
         name: "Shoes exterior",
         materials: [
-            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather shoe armor"}, 
+            {material_id: "Piece of wolf leather", count: 3, result_id: "Wolf leather shoe armor"},
             {material_id: "Piece of boar leather", count: 3, result_id: "Boar leather shoe armor"},
         ],
         item_type: "Component",
@@ -560,7 +560,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
         item_type: "Armor",
     });
 })();
-    
+
 //clothes (which is also equipment, but shhhh)
 (()=>{
     crafting_recipes.equipment["Hat"] = new ComponentRecipe({
@@ -619,7 +619,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
         component_type: "shoes interior",
         recipe_skill: "Crafting",
     });
-    
+
 })();
 
 //materials
@@ -627,7 +627,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Piece of wolf rat leather"] = new ItemRecipe({
         name: "Piece of wolf rat leather",
         recipe_type: "material",
-        materials: [{material_id: "Rat pelt", count: 8}], 
+        materials: [{material_id: "Rat pelt", count: 8}],
         result: {result_id: "Piece of wolf rat leather", count: 1},
         success_chance: [0.4,1],
         recipe_level: [1,5],
@@ -636,7 +636,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Piece of wolf leather"] = new ItemRecipe({
         name: "Piece of wolf leather",
         recipe_type: "material",
-        materials: [{material_id: "Wolf pelt", count: 8}], 
+        materials: [{material_id: "Wolf pelt", count: 8}],
         result: {result_id: "Piece of wolf leather", count: 1},
         success_chance: [0.2,1],
         recipe_skill: "Crafting",
@@ -654,7 +654,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Wool cloth"] = new ItemRecipe({
         name: "Wool cloth",
         recipe_type: "material",
-        materials: [{material_id: "Wool", count: 5}], 
+        materials: [{material_id: "Wool", count: 5}],
         result: {result_id: "Wool cloth", count: 1},
         success_chance: [0,1],
         recipe_skill: "Crafting",
@@ -663,7 +663,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     forging_recipes.items["Iron chainmail"] = new ItemRecipe({
         name: "Iron chainmail",
         recipe_type: "material",
-        materials: [{material_id: "Iron ingot", count: 5}], 
+        materials: [{material_id: "Iron ingot", count: 5}],
         result: {result_id: "Iron chainmail", count: 1},
         success_chance: [0.1,1],
         recipe_skill: "Forging",
@@ -673,7 +673,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Rat meat chunks"] = new ItemRecipe({
         name: "Rat meat chunks",
         recipe_type: "material",
-        materials: [{material_id: "Rat tail", count: 8}], 
+        materials: [{material_id: "Rat tail", count: 8}],
         result: {result_id: "Rat meat chunks", count: 1},
         success_chance: [0.4,1],
         recipe_level: [1,5],
@@ -683,7 +683,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     smelting_recipes.items["Low quality iron ingot"] = new ItemRecipe({
         name: "Low quality iron ingot",
         recipe_type: "material",
-        materials: [{material_id: "Low quality iron ore", count: 5}], 
+        materials: [{material_id: "Low quality iron ore", count: 5}],
         result: {result_id: "Low quality iron ingot", count: 1},
         success_chance: [0.4,1],
         recipe_level: [1,5],
@@ -692,7 +692,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     smelting_recipes.items["Iron ingot"] = new ItemRecipe({
         name: "Iron ingot",
         recipe_type: "material",
-        materials: [{material_id: "Iron ore", count: 5}], 
+        materials: [{material_id: "Iron ore", count: 5}],
         result: {result_id: "Iron ingot", count: 1},
         success_chance: [0.1,1],
         recipe_level: [5,15],
@@ -702,7 +702,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Processed rough wood"] = new ItemRecipe({
         name: "Processed rough wood",
         recipe_type: "material",
-        materials: [{material_id: "Piece of rough wood", count: 5}], 
+        materials: [{material_id: "Piece of rough wood", count: 5}],
         result: {result_id: "Processed rough wood", count: 1},
         success_chance: [0.6,1],
         recipe_level: [1,5],
@@ -711,7 +711,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     crafting_recipes.items["Processed wood"] = new ItemRecipe({
         name: "Processed wood",
         recipe_type: "material",
-        materials: [{material_id: "Piece of wood", count: 5}], 
+        materials: [{material_id: "Piece of wood", count: 5}],
         result: {result_id: "Processed wood", count: 1},
         success_chance: [0.2,1],
         recipe_level: [5,15],
@@ -724,7 +724,7 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
     cooking_recipes.items["Roasted rat meat"] = new ItemRecipe({
         name: "Roasted rat meat",
         recipe_type: "usable",
-        materials: [{material_id: "Rat meat chunks", count: 2}], 
+        materials: [{material_id: "Rat meat chunks", count: 2}],
         result: {result_id: "Roasted rat meat", count: 1},
         success_chance: [0.4,1],
         recipe_level: [1,5],
@@ -788,10 +788,10 @@ function get_recipe_xp_value({category, subcategory, recipe_id, material_count, 
 })();
 
 const recipes = {
-    crafting: crafting_recipes, 
-    cooking: cooking_recipes, 
-    smelting: smelting_recipes, 
-    forging: forging_recipes, 
+    crafting: crafting_recipes,
+    cooking: cooking_recipes,
+    smelting: smelting_recipes,
+    forging: forging_recipes,
     alchemy: alchemy_recipes
 }
 

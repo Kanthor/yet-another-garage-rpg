@@ -14,7 +14,7 @@ class Activity {
                   action_text,
                   base_skills_names,
                   is_unlocked = false,
-        }) 
+        })
     {
         this.name = name;
         this.description = description; //description on job

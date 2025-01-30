@@ -180,10 +180,10 @@ function Verify_Game_Objects() {
                         console.error(`Activity "${activity_key}" in location "${key}" refers to a non-existent item "${location.activities[activity_key].gained_resources.resources[i].name}"`);
                         has_issue = true;
                     }
-                }   
+                }
             });
         } else if(location.tags["Combat zone"]) {
-            
+
         }
 
         location_results[0]++;

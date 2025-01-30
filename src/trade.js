@@ -1,7 +1,7 @@
 "use strict";
 
 import { traders } from "./traders.js";
-import { 
+import {
     update_displayed_trader, update_displayed_trader_inventory, update_displayed_character_inventory, exit_displayed_trade, update_displayed_money } from "./display.js";
 import { add_to_character_inventory, remove_from_character_inventory } from "./character.js";
 import { skills } from "./skills.js";
@@ -19,13 +19,13 @@ function set_current_trader(trader_key) {
 }
 
 /**
- * 
- * @param {String} trader_key 
+ *
+ * @param {String} trader_key
  */
 function start_trade(trader_key) {
     traders[trader_key].refresh();
     current_trader = trader_key;
-    
+
     update_displayed_trader();
 }
 
@@ -43,7 +43,7 @@ function cancel_trade() {
 function accept_trade() {
 
     let new_balance;
-    
+
     if(to_sell.items.length == 0 && to_buy.items.length == 0) {
         new_balance = character.money;
     }
@@ -66,18 +66,18 @@ function accept_trade() {
             const item = to_buy.items.pop();
 
             const actual_item = traders[current_trader].inventory[item.item_key].item;
-            
+
             item.item_count = item.count;
             to_remove.push(item);
 
             item_list.push({item: actual_item, count: item.count});
         }
-        
+
         if(to_remove.length > 0) {
             add_to_character_inventory(item_list);
             remove_from_trader_inventory(current_trader,to_remove);
         }
-        
+
 
         item_list = []; //totally could reduce it to 1 array instead of 2 if I made param naming more consistent, maybe one day
         to_remove = [];
@@ -85,16 +85,16 @@ function accept_trade() {
         while(to_sell.items.length > 0) {
             //remove from character inventory
             //add to trader inventory
-            
+
             const item = to_sell.items.pop();
 
             const actual_item = character.inventory[item.item_key].item;
-            
+
             item.item_count = item.count;
             to_remove.push(item);
 
             item_list.push({item: actual_item, count: item.count});
-        
+
             if(item.id && item_templates[item.id]?.saturates_market) {
                 if(!loot_sold_count[item.id]) {
                     loot_sold_count[item.id] = {sold: 0, recovered: 0};
@@ -102,7 +102,7 @@ function accept_trade() {
                 loot_sold_count[item.id].sold = loot_sold_count[item.id]?.sold + (item.count || 1);
             }
         }
-        
+
         if(to_remove.length > 0) {
             add_to_trader_inventory(current_trader,item_list);
             remove_from_character_inventory(to_remove);
@@ -130,13 +130,13 @@ function exit_trade() {
 }
 
 /**
- * @param {} selected_item 
+ * @param {} selected_item
  * {item_key: {string with value of data- attribute, which is supposed to be an inventory key}, count: Number}
  * @returns {Number} change of trade value
  */
 function add_to_buying_list(selected_item) {
     const present_item = to_buy.items.find(a => a.item_key === selected_item.item_key);
-    
+
     let item_count_in_trader = traders[current_trader].inventory[selected_item.item_key].count;
 
     if(present_item) { //there's already some in inventory
@@ -148,8 +148,8 @@ function add_to_buying_list(selected_item) {
             present_item.count += selected_item.count;
         }
 
-    } else { 
-        if(item_count_in_trader < selected_item.count) { 
+    } else {
+        if(item_count_in_trader < selected_item.count) {
             //trader has not enough: buy all available
             selected_item.count = item_count_in_trader;
         }
@@ -163,7 +163,7 @@ function add_to_buying_list(selected_item) {
 }
 
 /**
- * @param {} selected_item 
+ * @param {} selected_item
  * {item_key: {string with value of data- attribute}, count: Number}
  * @returns {Number} change of trade value
  */
@@ -204,8 +204,8 @@ function add_to_selling_list(selected_item) {
             present_item.count += selected_item.count;
         }
 
-    } else { 
-        if(item_count_in_player < selected_item.count) { 
+    } else {
+        if(item_count_in_player < selected_item.count) {
             //character has not enough: sell all available
             selected_item.count = item_count_in_player;
         }
@@ -218,12 +218,12 @@ function add_to_selling_list(selected_item) {
 
     if(id && item_templates[id].saturates_market) {
         value = item_templates[id].getValueOfMultiple({additional_count_of_sold: (present_item?.count - selected_item.count || 0), count: selected_item.count});
-    } else if(id && !item_templates[id].saturates_market) { 
+    } else if(id && !item_templates[id].saturates_market) {
         value = item_templates[id].getValue(quality) * selected_item.count;
     } else {
         value = getEquipmentValue(components, quality) * selected_item.count;
     }
-    
+
     to_sell.value += value;
     return value;
 }
@@ -245,12 +245,12 @@ function remove_from_selling_list(selected_item) {
 
     if(id && item_templates[id].saturates_market) {
         value = item_templates[id].getValueOfMultiple({additional_count_of_sold: (present_item?.count || 0), count: actual_number_to_remove});
-    } else if(id && !item_templates[id].saturates_market) { 
+    } else if(id && !item_templates[id].saturates_market) {
         value = item_templates[id].getValue(quality) * actual_number_to_remove;
     } else {
         value = getEquipmentValue(components, quality) * actual_number_to_remove;
     }
-    
+
     to_sell.value -= value;
     return -value;
 
@@ -266,7 +266,7 @@ function add_to_trader_inventory(trader_key, items) {
 
 function remove_from_trader_inventory(trader_key, items) {
     traders[trader_key].remove_from_inventory(items);
-    
+
     if(current_trader === trader_key) {
         update_displayed_trader_inventory();
     }
@@ -289,8 +289,8 @@ function get_item_value(selected_item) {
     }
 }
 
-export {to_buy, to_sell, set_current_trader, current_trader, 
-        start_trade, cancel_trade, accept_trade, exit_trade, 
+export {to_buy, to_sell, set_current_trader, current_trader,
+        start_trade, cancel_trade, accept_trade, exit_trade,
         add_to_trader_inventory, remove_from_trader_inventory,
         add_to_buying_list, remove_from_buying_list,
         add_to_selling_list, remove_from_selling_list,

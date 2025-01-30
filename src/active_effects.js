@@ -1,9 +1,9 @@
-const effect_templates = {}; 
+const effect_templates = {};
 //templates, since some effects will appear across multiple items but with different durations
 
 class ActiveEffect {
     /**
-     * 
+     *
      * @param {Object} effect_data
      * @param {String} effect_data.name
      * @param {String} [effect_data.id]

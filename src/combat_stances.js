@@ -16,7 +16,7 @@ class Stance {
                 description = ""
             }
         ) {
-            
+
         if(related_skill && !skills[related_skill]) {
             throw(`Tried to attach skill "${related_skill}" to stance "${name}", but such a skill doesnt exist!`);
         }
@@ -27,7 +27,7 @@ class Stance {
         this.description = description;
         if(this.target_count < 1) {
             throw("Combat stance cannot target less than 1 enemy!");
-        }  
+        }
         this.target_count = target_count;
         this.randomize_target_count = randomize_target_count; //if true, the actual target count is a random number in range [1, target_count]
         this.is_unlocked = is_unlocked;

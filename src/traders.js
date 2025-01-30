@@ -18,22 +18,22 @@ class Trader extends InventoryHaver {
                  inventory_template,
                  profit_margin = 2,
                  is_unlocked = true,
-                }) 
+                })
     {
         super();
         this.name = name;
         this.trade_text = trade_text;
         this.location_name = location_name;
-        this.last_refresh = -1;  
+        this.last_refresh = -1;
         //just the day_count from game_time at which trader was supposedly last refreshed
 
-        this.refresh_time = refresh_time; 
+        this.refresh_time = refresh_time;
         //7 would mean it's refreshed every 7 days (with shift at 0 it's every monday)
-        
-        this.refresh_shift = refresh_shift; 
+
+        this.refresh_shift = refresh_shift;
         //shift refreshing days, e.g. time 7 + shift 2 would be every wednesday, shift 4 would push it to every friday
         //pretty much pointless if refresh time is not N*7
-        
+
         this.inventory_template = inventory_template;
         //a template for the trader to use, so multiple traders can have same predefined item selection (but still separate and with certain randomness)
 
@@ -42,7 +42,7 @@ class Trader extends InventoryHaver {
         //don't make it too low to prevent easy xp grinding for the haggling skill
         this.is_unlocked = is_unlocked;
     }
-    
+
     /**
      * refreshes trader inventory
      * @returns boolean informing if it was able to refresh
@@ -80,7 +80,7 @@ class Trader extends InventoryHaver {
                 let item_count = inventory_template[i].count.length == 1 ?
                 inventory_template[i].count[0] : Math.round(Math.random() *
                     (inventory_template[i].count[1] - inventory_template[i].count[0]) + inventory_template[i].count[0]);
-                
+
                 if(inventory_template[i].quality) {
                     let quality = Math.round(Math.random() *
                         (inventory_template[i].quality[1] - inventory_template[i].quality[0]) + inventory_template[i].quality[0]);
@@ -99,7 +99,7 @@ class Trader extends InventoryHaver {
     }
 
     /**
-     * 
+     *
      * @returns {Number} trader's profit margin multiplied by bonus from the haggling skill
      */
     getProfitMargin() {
@@ -123,13 +123,13 @@ class TradeItem {
                   chance = 1,
                   count = [1],
                   quality = [0.2, 0.8]
-                }) 
+                })
     {
         this.item_name = item_name;
         this.chance = chance; //chance for item to appear, 1 is 100%
-        this.count = count; 
+        this.count = count;
         //how many can appear, will randomly choose something between min and max if specificed, otherwise will go with specific ammount
-        
+
         this.quality = quality; //min and max quality of item
     }
 }
@@ -153,7 +153,7 @@ class TradeItem {
 
 //create inventory templates
 (function(){
-    inventory_templates["Basic"] = 
+    inventory_templates["Basic"] =
     [
             new TradeItem({item_name: "Cheap iron spear", count: [1], quality: [40, 90], chance: 0.8}),
             new TradeItem({item_name: "Cheap iron dagger", count: [1], quality: [40, 90], chance: 0.8}),
@@ -193,11 +193,11 @@ class TradeItem {
 
             new TradeItem({item_name: "ABC for kids", count: [1], chance: 1}),
             new TradeItem({item_name: "Old combat manual", count: [1], chance: 0.5}),
-            
+
             new TradeItem({item_name: "Glass phial", count: [5,10], chance: 1}),
     ];
 
-    inventory_templates["Basic plus"] = 
+    inventory_templates["Basic plus"] =
     [
             new TradeItem({item_name: "Iron spear", count: [1], quality: [40, 80], chance: 0.8}),
             new TradeItem({item_name: "Iron dagger", count: [1], quality: [40, 80], chance: 0.8}),
@@ -227,14 +227,14 @@ class TradeItem {
             new TradeItem({item_name: "Wolf leather armor", count: [1], chance: 0.8, quality: [91, 120]}),
             new TradeItem({item_name: "Wolf leather armored pants", count: [1], chance: 0.8, quality: [91, 120]}),
             new TradeItem({item_name: "Wolf leather helmet", count: [1], chance: 0.8, quality: [91, 120]}),
-            
+
             new TradeItem({item_name: "Iron chainmail armor", count: [1], chance: 0.8, quality: [40, 80]}),
             new TradeItem({item_name: "Iron chainmail armor", count: [1], chance: 0.6, quality: [81, 120]}),
             new TradeItem({item_name: "Iron chainmail pants", count: [1], chance: 0.8, quality: [40, 80]}),
             new TradeItem({item_name: "Iron chainmail pants", count: [1], chance: 0.6, quality: [81, 120]}),
             new TradeItem({item_name: "Iron chainmail helmet", count: [1], chance: 0.8, quality: [40, 80]}),
             new TradeItem({item_name: "Iron chainmail helmet", count: [1], chance: 0.6, quality: [81, 120]}),
-            
+
             new TradeItem({item_name: "Stale bread", count: [4,10]}),
             new TradeItem({item_name: "Fresh bread", count: [2,5]}),
             new TradeItem({item_name: "Weak healing powder", count: [2,5]}),

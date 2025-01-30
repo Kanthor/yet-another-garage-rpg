@@ -15,7 +15,7 @@
             200-246%    legendary      orange     x2
             247-250%    mythical       ????       x2.5
 
-            quality affects only attack/defense/max block, while additional multiplier affects all positive stats 
+            quality affects only attack/defense/max block, while additional multiplier affects all positive stats
             (i.e flat bonuses over 0 and multiplicative bonuses over 1)
 
     basic idea for weapons:
@@ -28,7 +28,7 @@
         long handles (spears) have higher attack multiplier and lower attack speed (so they counter the effects of the short blades)
         medium handles (axes/blunt weapons) have them average
         short handles have lowest attack multiplier
-        
+
         so, as a result, attack damage goes blunt > axe > spear > sword > dagger
         and attack speed goes               dagger > sword > spear > axe > blunt
         which kinda makes spears very average, but they also get bonus crit so whatever
@@ -63,7 +63,7 @@ function recoverItemPrices(count=1) {
         }
 
         loot_sold_count[item_name].recovered += count;
-        
+
         if(loot_sold_count[item_name].recovered > loot_sold_count[item_name].sold) {
             loot_sold_count[item_name].recovered = loot_sold_count[item_name].sold;
         }
@@ -81,11 +81,11 @@ function getLootPriceModifier(value, how_many_sold) {
 }
 
 /**
- * 
+ *
  * @param {Number} value
- * @param {Number} start_count 
- * @param {Number} how_many_to_sell 
- * @returns 
+ * @param {Number} start_count
+ * @param {Number} how_many_to_sell
+ * @returns
  */
 function getLootPriceModifierMultiple(value, start_count, how_many_to_sell) {
     let sum = 0;
@@ -127,7 +127,7 @@ function getItemRarity(quality) {
     else if(quality < 200) rarity = "epic";
     else if(quality < 246) rarity = "legendary";
     else rarity = "mythical";
-    
+
     return rarity;
 }
 
@@ -142,12 +142,12 @@ function getEquipmentValue(components, quality) {
 class Item {
     constructor({name,
                 description,
-                value = 0, 
+                value = 0,
                 tags = {},
                 id = null,
                 })
     {
-        this.name = name; 
+        this.name = name;
         this.description = description;
         this.saturates_market = false;
         this.id = id;
@@ -187,7 +187,7 @@ class Item {
         if(!this.saturates_market) {
             return round_item_price(this.value);
         }
-        else {  
+        else {
             return Math.max(1, round_item_price(Math.ceil(this.value * getLootPriceModifier(this.value,(Math.max(loot_sold_count[this.id]?.sold - loot_sold_count[this.id]?.recovered,0)||0)))));
         }
     }
@@ -267,7 +267,7 @@ class ItemComponent extends Item {
         else if(quality < 200) rarity = "epic";
         else if(quality < 246) rarity = "legendary";
         else rarity = "mythical";
-        
+
         return rarity;
     }
 
@@ -277,7 +277,7 @@ class ItemComponent extends Item {
 
     getValue(quality) {
         return round_item_price(this.value * (quality/100 || this.quality/100));
-    } 
+    }
 }
 
 class WeaponComponent extends ItemComponent {
@@ -319,7 +319,7 @@ class ShieldComponent extends ItemComponent {
         this.component_type = item_data.component_type;
 
         //properties below only matter for shield type component
-        this.shield_strength = item_data.shield_strength; 
+        this.shield_strength = item_data.shield_strength;
         this.shield_name = item_data.shield_name || item_data.name;
 
         this.tags["shield component"] = true;
@@ -385,7 +385,7 @@ class Equippable extends Item {
 
     getValue(quality) {
         return round_item_price(this.value * (quality || this.quality));
-    } 
+    }
 
     getRarity(quality){
         if(!quality) {
@@ -474,7 +474,7 @@ class Artifact extends Equippable {
 
     getValue() {
         return this.value;
-    } 
+    }
 
     getStats(){
         return this.stats;
@@ -498,7 +498,7 @@ class Tool extends Equippable {
 
     getValue() {
         return this.value;
-    } 
+    }
 }
 
 class Shield extends Equippable {
@@ -548,7 +548,7 @@ class Shield extends Equippable {
                                   * (quality/100 || this.quality/100) * rarity_multipliers[this.getRarity(quality)];
         }
         return round_item_price(this.value);
-    } 
+    }
 }
 
 class Armor extends Equippable {
@@ -562,11 +562,11 @@ class Armor extends Equippable {
     */
    /**
     * Takes either {components} or {stats}, with {components} having higher priority. Lack of {components} assumes item is a wearable internal part (clothing)
-    * @param {*} item_data 
+    * @param {*} item_data
     */
     constructor(item_data) {
         super(item_data);
-        
+
         if(item_data.components) {
             if(!item_templates[item_data.components.internal]) {
                 throw new Error(`No such internal armor element as: ${item_data.components.internal}`);
@@ -591,13 +591,13 @@ class Armor extends Equippable {
             if(item_data.external && !item_templates[item_data.external]) {
                 throw new Error(`No such external armor element as: ${item_data.components.external}`);
             }
-            
-        } else { 
+
+        } else {
             this.tags["armor component"] = true;
             this.tags["clothing"] = true;
             this.stats = item_data.stats || {};
             delete this.components;
-            
+
             if(!item_data.name) {
                 throw new Error(`Component-less item needs to be provided a name!`);
             }
@@ -644,8 +644,8 @@ class Armor extends Equippable {
     }
     calculateDefense(quality) {
         if(this.components) {
-            return Math.ceil(((item_templates[this.components.internal].defense_value || item_templates[this.components.internal].base_defense ||0) + 
-                                        (item_templates[this.components.external]?.defense_value || 0 )) 
+            return Math.ceil(((item_templates[this.components.internal].defense_value || item_templates[this.components.internal].base_defense ||0) +
+                                        (item_templates[this.components.external]?.defense_value || 0 ))
                                         * (quality/100 || this.quality/100) * rarity_multipliers[this.getRarity(quality || this.quality)]
             )
         } else {
@@ -654,7 +654,7 @@ class Armor extends Equippable {
     }
 
     getValue(quality) {
-        
+
         if(this.components) {
             //value of internal + value of external (if present), both multiplied by quality and rarity
             return round_item_price((item_templates[this.components.internal].value + (item_templates[this.components.external]?.value || 0))
@@ -662,7 +662,7 @@ class Armor extends Equippable {
         } else {
             return round_item_price(item_templates[this.id].value * (quality/100 || this.quality/100) * rarity_multipliers[this.getRarity(quality)]);
         }
-    } 
+    }
 
     getName() {
         /*
@@ -702,23 +702,23 @@ class Weapon extends Equippable {
         }
         this.components.handle = item_data.components.handle; //only the name
 
-        if(item_templates[this.components.handle].component_type === "long handle" 
+        if(item_templates[this.components.handle].component_type === "long handle"
         && (item_templates[this.components.head].component_type === "short blade" || item_templates[this.components.head].component_type === "long blade")) {
             //long handle + short/long blade = spear
             this.weapon_type = "spear";
-        } else if(item_templates[this.components.handle].component_type === "medium handle" 
+        } else if(item_templates[this.components.handle].component_type === "medium handle"
         && item_templates[this.components.head].component_type === "axe head") {
             //medium handle + axe head = axe
             this.weapon_type = "axe";
-        } else if(item_templates[this.components.handle].component_type === "medium handle" 
+        } else if(item_templates[this.components.handle].component_type === "medium handle"
         && item_templates[this.components.head].component_type === "hammer head") {
             //medium handle + hammer head = hammer
             this.weapon_type = "hammer";
-        } else if(item_templates[this.components.handle].component_type === "short handle" 
+        } else if(item_templates[this.components.handle].component_type === "short handle"
         && item_templates[this.components.head].component_type === "short blade") {
             //short handle + short blade = dagger
             this.weapon_type = "dagger";
-        } else if(item_templates[this.components.handle].component_type === "short handle" 
+        } else if(item_templates[this.components.handle].component_type === "short handle"
         && item_templates[this.components.head].component_type === "long blade") {
             //short handle + long blade = sword
             this.weapon_type = "sword";
@@ -759,7 +759,7 @@ class Weapon extends Equippable {
             this.value = (item_templates[this.components.handle].value + item_templates[this.components.head].value) * (quality/100 || this.quality/100) * rarity_multipliers[this.getRarity(quality)]
         }
         return round_item_price(this.value);
-    } 
+    }
 
     getName() {
         return `${item_templates[this.components.head].name_prefix} ${this.weapon_type === "hammer" ? "battle hammer" : this.weapon_type}`;
@@ -800,7 +800,7 @@ class Book extends Item {
     }
 
     /**
-     * 
+     *
      * @returns {Number} total time needed to read the book
      */
     getReadingTime() {
@@ -810,7 +810,7 @@ class Book extends Item {
     }
 
     /**
-     * 
+     *
      * @returns {Number} remaining time needed to read the book (total time minus accumulated time)
      */
     getRemainingTime() {
@@ -833,7 +833,7 @@ class Book extends Item {
 }
 
 /**
- * @param {*} item_data 
+ * @param {*} item_data
  * @returns item of proper type, created with item_data
  */
 function getItem(item_data) {
@@ -860,11 +860,11 @@ function getItem(item_data) {
         case "OTHER":
             return new OtherItem(item_data);
         case "COMPONENT":
-            if(item_data.tags["weapon component"]) 
+            if(item_data.tags["weapon component"])
                 return new WeaponComponent(item_data);
-            else if(item_data.tags["armor component"]) 
+            else if(item_data.tags["armor component"])
                 return new ArmorComponent(item_data);
-            else if(item_data.tags["shield component"]) 
+            else if(item_data.tags["shield component"])
                 return new ShieldComponent(item_data);
             else throw new Error(`Item ${item_data.name} has a wrong component type`);
         case "MATERIAL":
@@ -928,32 +928,32 @@ item_templates["Twist liek a snek"] = new Book({
 //miscellaneous and loot:
 (function(){
     item_templates["Rat fang"] = new OtherItem({
-        name: "Rat fang", 
-        description: "Fang of a huge rat, not very sharp, but can still pierce a human skin if enough force is applied", 
+        name: "Rat fang",
+        description: "Fang of a huge rat, not very sharp, but can still pierce a human skin if enough force is applied",
         value: 8,
         saturates_market: true,
         price_recovers: true,
     });
 
     item_templates["Wolf fang"] = new OtherItem({
-        name: "Wolf fang", 
-        description: "Fang of a wild wolf. Somewhat sharp, still not very useful. Maybe if it had a bit better quality...", 
+        name: "Wolf fang",
+        description: "Fang of a wild wolf. Somewhat sharp, still not very useful. Maybe if it had a bit better quality...",
         value: 12,
         saturates_market: true,
         price_recovers: true,
     });
 
     item_templates["Rat meat chunks"] = new OtherItem({
-        name: "Rat meat chunks", 
-        description: "Eww", 
+        name: "Rat meat chunks",
+        description: "Eww",
         value: 8,
         saturates_market: true,
         price_recovers: true,
     });
 
     item_templates["Glass phial"] = new OtherItem({
-        name: "Glass phial", 
-        description: "Small glass phial, a perfect container for a potion", 
+        name: "Glass phial",
+        description: "Small glass phial, a perfect container for a potion",
         value: 10,
         saturates_market: false,
     });
@@ -962,36 +962,36 @@ item_templates["Twist liek a snek"] = new Book({
 //lootable materials
 (function(){
     item_templates["Rat tail"] = new Material({
-        name: "Rat tail", 
-        description: "Tail of a huge rat. Doesn't seem very useful, but maybe some meat could be recovered from it", 
+        name: "Rat tail",
+        description: "Tail of a huge rat. Doesn't seem very useful, but maybe some meat could be recovered from it",
         value: 4,
         price_recovers: true,
         material_type: "meat source",
     });
     item_templates["Rat pelt"] = new Material({
-        name: "Rat pelt", 
-        description: "Pelt of a huge rat. Fur has terrible quality, but maybe leather could be used for something if you gather more?", 
+        name: "Rat pelt",
+        description: "Pelt of a huge rat. Fur has terrible quality, but maybe leather could be used for something if you gather more?",
         value: 10,
         price_recovers: true,
         material_type: "pelt",
     });
     item_templates["High quality wolf fang"] = new Material({
-        name: "High quality wolf fang", 
-        description: "Fang of a wild wolf. Very sharp, undamaged and surprisingly clean.", 
+        name: "High quality wolf fang",
+        description: "Fang of a wild wolf. Very sharp, undamaged and surprisingly clean.",
         value: 15,
         price_recovers: true,
         material_type: "miscellaneous",
     });
     item_templates["Wolf pelt"] = new Material({
-        name: "Wolf pelt", 
-        description: "Pelt of a wild wolf. It's a bit damaged so it won't fetch a great price, but the leather itself could be useful.", 
+        name: "Wolf pelt",
+        description: "Pelt of a wild wolf. It's a bit damaged so it won't fetch a great price, but the leather itself could be useful.",
         value: 20,
         price_recovers: true,
         material_type: "pelt",
     });
 
     item_templates["Boar hide"] = new Material({
-        name: "Boar hide", 
+        name: "Boar hide",
         description: "Thick hide of a wild boar. Too stiff for clothing, but might be useful for an armor",
         value: 30,
         price_recovers: true,
@@ -1005,15 +1005,15 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "meat source",
     });
     item_templates["High quality boar tusk"] = new Material({
-        name: "High quality boar tusk", 
-        description: "Tusk of a wild boar. Sharp and long enough to easily kill an adult human", 
+        name: "High quality boar tusk",
+        description: "Tusk of a wild boar. Sharp and long enough to easily kill an adult human",
         value: 25,
         price_recovers: true,
         material_type: "miscellaneous",
     });
 
     item_templates["Weak monster bone"] = new Material({
-        name: "Weak monster bone", 
+        name: "Weak monster bone",
         description: "Mutated and dark bone of a monster. While far on the weaker side, it's still very strong",
         value: 30,
         price_recovers: true,
@@ -1025,39 +1025,39 @@ item_templates["Twist liek a snek"] = new Book({
 //gatherable materials
 (function(){
     item_templates["Low quality iron ore"] = new Material({
-        name: "Low quality iron ore", 
-        description: "Iron content is rather low and there are a lot of problematic components that can't be fully removed, which will affect created materials.", 
+        name: "Low quality iron ore",
+        description: "Iron content is rather low and there are a lot of problematic components that can't be fully removed, which will affect created materials.",
         value: 3,
         saturates_market: true,
         price_recovers: true,
         material_type: "raw metal",
     });
     item_templates["Iron ore"] = new Material({
-        name: "Iron ore", 
-        description: "It has a decent iron content and can be smelt into market-quality iron.", 
+        name: "Iron ore",
+        description: "It has a decent iron content and can be smelt into market-quality iron.",
         value: 5,
         saturates_market: true,
         price_recovers: true,
         material_type: "raw metal",
     });
     item_templates["Piece of rough wood"] = new Material({
-        name: "Piece of rough wood", 
-        description: "Cheapest form of wood. There's a lot of bark and malformed pieces.", 
+        name: "Piece of rough wood",
+        description: "Cheapest form of wood. There's a lot of bark and malformed pieces.",
         value: 2,
         saturates_market: true,
         price_recovers: true,
         material_type: "raw wood",
     });
     item_templates["Piece of wood"] = new Material({
-        name: "Piece of wood", 
-        description: "Average quality wood. There's a lot of bark and malformed pieces.", 
+        name: "Piece of wood",
+        description: "Average quality wood. There's a lot of bark and malformed pieces.",
         value: 4,
         saturates_market: true,
         price_recovers: true,
         material_type: "raw wood",
     });
     item_templates["Piece of ash wood"] = new Material({
-        name: "Piece of ash wood", 
+        name: "Piece of ash wood",
         description: "Strong yet elastic, it's best wood you can hope to find around. There's a lot of bark and malformed pieces.",
         value: 7,
         saturates_market: true,
@@ -1066,7 +1066,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Belmart leaf"] = new Material({
-        name: "Belmart leaf", 
+        name: "Belmart leaf",
         description: "Small, round, dark-green leaves with with very good disinfectant properties",
         value: 8,
         saturates_market: true,
@@ -1075,7 +1075,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Golmoon leaf"] = new Material({
-        name: "Golmoon leaf", 
+        name: "Golmoon leaf",
         description: "Big green-brown leaves that can be applied to wounds to speed up their healing",
         value: 8,
         saturates_market: true,
@@ -1084,7 +1084,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Oneberry"] = new Material({
-        name: "Oneberry", 
+        name: "Oneberry",
         description: "Small blue berries capable of stimulating body's natural healing",
         value: 8,
         saturates_market: true,
@@ -1093,7 +1093,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Wool"] = new Material({
-        name: "Wool", 
+        name: "Wool",
         description: "A handful of wool, raw and unprocessed",
         value: 8,
         saturates_market: true,
@@ -1106,8 +1106,8 @@ item_templates["Twist liek a snek"] = new Book({
 (function(){
     item_templates["Low quality iron ingot"] = new Material({
         id: "Low quality iron ingot",
-        name: "Low quality iron ingot", 
-        description: "It has a lot of impurities, resulting in it being noticeably below the market standard", 
+        name: "Low quality iron ingot",
+        description: "It has a lot of impurities, resulting in it being noticeably below the market standard",
         value: 10,
         saturates_market: true,
         price_recovers: true,
@@ -1115,8 +1115,8 @@ item_templates["Twist liek a snek"] = new Book({
     });
     item_templates["Iron ingot"] = new Material({
         id: "Iron ingot",
-        name: "Iron ingot", 
-        description: "It doesn't suffer from any excessive impurities and can be used without worries.", 
+        name: "Iron ingot",
+        description: "It doesn't suffer from any excessive impurities and can be used without worries.",
         value: 20,
         saturates_market: true,
         price_recovers: true,
@@ -1131,7 +1131,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "piece of leather",
     });
     item_templates["Piece of wolf leather"] = new Material({
-        name: "Piece of wolf leather", 
+        name: "Piece of wolf leather",
         description: "Somewhat strong, should offer some protection when turned into armor",
         value: 20,
         saturates_market: true,
@@ -1139,7 +1139,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "piece of leather",
     });
     item_templates["Piece of boar leather"] = new Material({
-        name: "Piece of boar leather", 
+        name: "Piece of boar leather",
         description: "Thick and resistant leather, too stiff for clothes but perfect for armor",
         value: 30,
         saturates_market: true,
@@ -1147,7 +1147,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "piece of leather",
     });
     item_templates["Wool cloth"] = new Material({
-        name: "Wool cloth", 
+        name: "Wool cloth",
         description: "Thick and warm, might possibly absord some punches",
         value: 8,
         saturates_market: true,
@@ -1155,7 +1155,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "fabric",
     });
     item_templates["Iron chainmail"] = new Material({
-        name: "Iron chainmail", 
+        name: "Iron chainmail",
         description: "Dozens of tiny iron rings linked together. Nowhere near a wearable form, turning it into armor will still take a lot of effort and focus",
         value: 12,
         saturates_market: true,
@@ -1163,7 +1163,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "chainmail",
     });
     item_templates["Scraps of wolf rat meat"] = new Material({
-        name: "Scraps of wolf rat meat", 
+        name: "Scraps of wolf rat meat",
         description: "Ignoring where they come from and all the attached diseases, they actually look edible. Just remember to cook it first.",
         value: 8,
         saturates_market: true,
@@ -1171,7 +1171,7 @@ item_templates["Twist liek a snek"] = new Book({
         material_type: "meat",
     });
     item_templates["Processed rough wood"] = new Material({
-        name: "Processed rough wood", 
+        name: "Processed rough wood",
         description: "Cheapest form of wood, ready to be used. Despite being rather weak, it still has a lot of uses.",
         value: 6,
         saturates_market: true,
@@ -1180,7 +1180,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Processed wood"] = new Material({
-        name: "Processed wood", 
+        name: "Processed wood",
         description: "Average quality wood, ready to be used.",
         value: 11,
         saturates_market: true,
@@ -1189,7 +1189,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Processed ash wood"] = new Material({
-        name: "Processed ash wood", 
+        name: "Processed ash wood",
         description: "High quality wood, just waiting to be turned into a piece of equipment.",
         value: 20,
         saturates_market: true,
@@ -1202,9 +1202,9 @@ item_templates["Twist liek a snek"] = new Book({
 //spare parts
 (function(){
     item_templates["Basic spare parts"] = new OtherItem({
-        name: "Basic spare parts", 
+        name: "Basic spare parts",
         description: "Some cheap and simple spare parts, like bindings and screws, necessary for crafting equipment",
-        value: 30, 
+        value: 30,
         component_tier: 1,
     });
 }());
@@ -1387,7 +1387,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Long wooden shaft"] = new WeaponComponent({
-        name: "Long wooden shaft", 
+        name: "Long wooden shaft",
         description: "A long shaft for a spear, somewhat uneven",
         component_type: "long handle",
         value: 120,
@@ -1473,7 +1473,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Long iron shaft"] = new WeaponComponent({
-        name: "Long iron shaft", 
+        name: "Long iron shaft",
         description: "A long shaft for a spear,  extremely heavy",
         component_type: "long handle",
         value: 160,
@@ -1561,7 +1561,7 @@ item_templates["Twist liek a snek"] = new Book({
 //armor components:
 (function(){
     item_templates["Wolf leather helmet armor"] = new ArmorComponent({
-        name: "Wolf leather helmet armor", 
+        name: "Wolf leather helmet armor",
         description: "Strenghtened wolf leather, ready to be used as a part of a helmet",
         component_type: "helmet exterior",
         value: 300,
@@ -1576,7 +1576,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Boar leather helmet armor"] = new ArmorComponent({
-        name: "Boar leather helmet armor", 
+        name: "Boar leather helmet armor",
         description: "Strong boar leather, ready to be used as a part of a helmet",
         component_type: "helmet exterior",
         value: 500,
@@ -1777,8 +1777,8 @@ item_templates["Twist liek a snek"] = new Book({
 //clothing (functions both as weak armor and as an armor component):
 (function(){
     item_templates["Cheap leather vest"] = new Armor({
-        name: "Cheap leather vest", 
-        description: "Vest providing very low protection. Better not to know what's it made from", 
+        name: "Cheap leather vest",
+        description: "Vest providing very low protection. Better not to know what's it made from",
         value: 100,
         component_type: "chestplate interior",
         base_defense: 2,
@@ -1790,8 +1790,8 @@ item_templates["Twist liek a snek"] = new Book({
         }
     });
     item_templates["Leather vest"] = new Armor({
-        name: "Leather vest", 
-        description: "Comfortable leather vest, offering a low protection.", 
+        name: "Leather vest",
+        description: "Comfortable leather vest, offering a low protection.",
         value: 300,
         component_type: "chestplate interior",
         base_defense: 2,
@@ -1799,8 +1799,8 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Cheap leather pants"] = new Armor({
-        name: "Cheap leather pants", 
-        description: "Leather pants made from cheapest resources available.", 
+        name: "Cheap leather pants",
+        description: "Leather pants made from cheapest resources available.",
         value: 100,
         component_type: "leg armor interior",
         base_defense: 1,
@@ -1812,8 +1812,8 @@ item_templates["Twist liek a snek"] = new Book({
         }
     });
     item_templates["Leather pants"] = new Armor({
-        name: "Leather pants", 
-        description: "Solid leather pants.", 
+        name: "Leather pants",
+        description: "Solid leather pants.",
         value: 300,
         component_type: "leg armor interior",
         base_defense: 2,
@@ -1821,8 +1821,8 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Cheap leather hat"] = new Armor({
-        name: "Cheap leather hat", 
-        description: "A cheap leather hat to protect your head.", 
+        name: "Cheap leather hat",
+        description: "A cheap leather hat to protect your head.",
         value: 100,
         component_type: "helmet interior",
         base_defense: 1,
@@ -1835,8 +1835,8 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Leather hat"] = new Armor({
-        name: "Leather hat", 
-        description: "A nice leather hat to protect your head.", 
+        name: "Leather hat",
+        description: "A nice leather hat to protect your head.",
         value: 300,
         component_type: "helmet interior",
         base_defense: 2,
@@ -1844,8 +1844,8 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Leather gloves"] = new Armor({
-        name: "Leather gloves", 
-        description: "Strong leather gloves, perfect for handling rough and sharp objects.", 
+        name: "Leather gloves",
+        description: "Strong leather gloves, perfect for handling rough and sharp objects.",
         value: 300,
         component_type: "glove interior",
         base_defense: 1,
@@ -1854,7 +1854,7 @@ item_templates["Twist liek a snek"] = new Book({
 
     item_templates["Cheap leather shoes"] = new Armor({
         name: "Cheap leather shoes",
-        description: "Shoes made of thin and cheap leather. Even then, they are in every single aspect better than not having any.", 
+        description: "Shoes made of thin and cheap leather. Even then, they are in every single aspect better than not having any.",
         value: 100,
         component_type: "shoes interior",
         base_defense: 0,
@@ -1866,8 +1866,8 @@ item_templates["Twist liek a snek"] = new Book({
         }
     });
     item_templates["Leather shoes"] = new Armor({
-        name: "Leather shoes", 
-        description: "Solid shoes made of leather, a must have for any traveler", 
+        name: "Leather shoes",
+        description: "Solid shoes made of leather, a must have for any traveler",
         value: 300,
         component_type: "shoes interior",
         base_defense: 1,
@@ -1884,7 +1884,7 @@ item_templates["Twist liek a snek"] = new Book({
 
     item_templates["Wool shirt"] = new Armor({
         name: "Wool shirt",
-        description: "It's thick enough to weaken a blow, but you shouldn't hope for much. On the plus side, it's light and doesn't block your moves.", 
+        description: "It's thick enough to weaken a blow, but you shouldn't hope for much. On the plus side, it's light and doesn't block your moves.",
         value: 300,
         component_type: "chestplate interior",
         base_defense: 1,
@@ -1900,7 +1900,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Wool pants"] = new Armor({
-        name: "Wool pants", 
+        name: "Wool pants",
         description: "Nice woollen pants. Slightly itchy.",
         value: 100,
         component_type: "leg armor interior",
@@ -1909,7 +1909,7 @@ item_templates["Twist liek a snek"] = new Book({
     });
 
     item_templates["Wool hat"] = new Armor({
-        name: "Wool hat", 
+        name: "Wool hat",
         description: "Simple woollen hat to protect your head.",
         value: 300,
         component_type: "helmet interior",
@@ -1980,16 +1980,16 @@ item_templates["Twist liek a snek"] = new Book({
 //shield components:
 (function(){
     item_templates["Cheap wooden shield base"] = new ShieldComponent({
-        name: "Cheap wooden shield base", description: "Cheap shield component made of wood, basically just a few planks barely holding together", 
-        value: 20, 
-        shield_strength: 1, 
+        name: "Cheap wooden shield base", description: "Cheap shield component made of wood, basically just a few planks barely holding together",
+        value: 20,
+        shield_strength: 1,
         shield_name: "Cheap wooden shield",
         component_tier: 1,
         component_type: "shield base",
     });
 
     item_templates["Crude wooden shield base"] = new ShieldComponent({
-        name: "Crude wooden shield base", description: "A shield base of rather bad quality, but at least it won't fall apart by itself", 
+        name: "Crude wooden shield base", description: "A shield base of rather bad quality, but at least it won't fall apart by itself",
         value: 40,
         shield_strength: 3,
         shield_name: "Crude wooden shield",
@@ -1997,7 +1997,7 @@ item_templates["Twist liek a snek"] = new Book({
         component_type: "shield base",
     });
     item_templates["Wooden shield base"] = new ShieldComponent({
-        name: "Wooden shield base", description: "Proper wooden shield base, although it could use some additional reinforcement", 
+        name: "Wooden shield base", description: "Proper wooden shield base, although it could use some additional reinforcement",
         value: 100,
         shield_strength: 5,
         shield_name: "Wooden shield",
@@ -2005,7 +2005,7 @@ item_templates["Twist liek a snek"] = new Book({
         component_type: "shield base",
     });
     item_templates["Crude iron shield base"] = new ShieldComponent({
-        name: "Crude iron shield base", description: "Heavy shield base made of low quality iron.", 
+        name: "Crude iron shield base", description: "Heavy shield base made of low quality iron.",
         value: 160,
         shield_strength: 7,
         shield_name: "Crude iron shield",
@@ -2018,8 +2018,8 @@ item_templates["Twist liek a snek"] = new Book({
         }
     });
     item_templates["Iron shield base"] = new ShieldComponent({
-        name: "Iron shield base", 
-        description: "Solid and strong shield base, although it's quite heavy", 
+        name: "Iron shield base",
+        description: "Solid and strong shield base, although it's quite heavy",
         value: 260,
         shield_strength: 10,
         shield_name: "Iron shield",
@@ -2033,16 +2033,16 @@ item_templates["Twist liek a snek"] = new Book({
     });
     item_templates["Basic shield handle"] = new ShieldComponent({
         id: "Basic shield handle",
-        name: "Crude wooden shield handle", 
-        description: "A simple handle for holding the shield", 
+        name: "Crude wooden shield handle",
+        description: "A simple handle for holding the shield",
         value: 10,
         component_tier: 1,
         component_type: "shield handle",
     });
 
     item_templates["Wooden shield handle"] = new ShieldComponent({
-        name: "Wooden shield handle", 
-        description: "A decent wooden handle for holding the shield", 
+        name: "Wooden shield handle",
+        description: "A decent wooden handle for holding the shield",
         value: 40,
         component_tier: 2,
         component_type: "shield handle",
@@ -2149,41 +2149,41 @@ item_templates["Twist liek a snek"] = new Book({
 //usables:
 (function(){
     item_templates["Stale bread"] = new UsableItem({
-        name: "Stale bread", description: "Big piece of an old bread, still edible.", 
+        name: "Stale bread", description: "Big piece of an old bread, still edible.",
         value: 20,
         effects: [{effect: "Basic meal", duration: 60}],
     });
 
     item_templates["Fresh bread"] = new UsableItem({
-        name: "Fresh bread", 
-        description: "Freshly baked bread, delicious.", 
+        name: "Fresh bread",
+        description: "Freshly baked bread, delicious.",
         value: 40,
         effects: [{effect: "Basic meal", duration: 120}],
     });
 
     item_templates["Weak healing powder"] = new UsableItem({
-        name: "Weak healing powder", 
-        description: "Not very potent, but can still make body heal noticeably faster for quite a while", 
+        name: "Weak healing powder",
+        description: "Not very potent, but can still make body heal noticeably faster for quite a while",
         value: 40,
         effects: [{effect: "Weak healing powder", duration: 120}],
     });
 
     item_templates["Oneberry juice"] = new UsableItem({
-        name: "Oneberry juice", 
-        description: "Tastes kinda nice and provides a quick burst of healing", 
+        name: "Oneberry juice",
+        description: "Tastes kinda nice and provides a quick burst of healing",
         value: 80,
         effects: [{effect: "Weak healing potion", duration: 10}],
     });
 
     item_templates["Roasted rat meat"] = new UsableItem({
-        name: "Roasted rat meat", 
+        name: "Roasted rat meat",
         description: "Smell might be fine now, but it still seems like a bad idea to eat it",
         value: 10,
         effects: [{effect: "Cheap meat meal", duration: 30}, {effect: "Slight food poisoning", duration: 30}],
     });
 
     item_templates["Roasted purified rat meat"] = new UsableItem({
-        name: "Roasted purified rat meat", 
+        name: "Roasted purified rat meat",
         description: "Smells alright and should be safe to eat, yet you still have some doubts",
         value: 20,
         effects: [{effect: "Cheap meat meal", duration: 30}],
@@ -2195,9 +2195,9 @@ Object.keys(item_templates).forEach(id => {
 })
 
 export {
-    item_templates, 
-    Item, OtherItem, UsableItem, 
-    Armor, Shield, Weapon, Artifact, Book, 
+    item_templates,
+    Item, OtherItem, UsableItem,
+    Armor, Shield, Weapon, Artifact, Book,
     WeaponComponent, ArmorComponent, ShieldComponent,
     getItem, setLootSoldCount, recoverItemPrices, round_item_price, getArmorSlot, getEquipmentValue,
     book_stats, loot_sold_count,

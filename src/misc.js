@@ -81,13 +81,13 @@ function get_hit_chance(attack_points, evasion_points) {
     } else {
         result = result**1.3;
     }
-    
+
 
     return result;
 }
 
 /**
- * 
+ *
  * @returns {String} 1 if a is newer, 0 if both are same, -1 if b is newer
  */
 function compare_game_version(version_a, version_b) {
@@ -96,7 +96,7 @@ function compare_game_version(version_a, version_b) {
     for(let i = 0; i < a.length; i++) {
         let temp;
         if(Number.parseInt(a[i]) && Number.parseInt(b[i])) {
-            temp = [Number.parseInt(a[i]), Number.parseInt(b[i])] 
+            temp = [Number.parseInt(a[i]), Number.parseInt(b[i])]
         } else {
             temp = [a[i], b[i]];
         }

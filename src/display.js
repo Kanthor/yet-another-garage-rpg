@@ -4,12 +4,12 @@ import { traders } from "./traders.js";
 import { current_trader, to_buy, to_sell } from "./trade.js";
 import { skills, get_unlocked_skill_rewards, get_next_skill_milestone } from "./skills.js";
 import { character, get_skill_xp_gain, get_hero_xp_gain, get_skills_overall_xp_gain } from "./character.js";
-import { current_enemies, options, 
-    can_work, current_location, 
-    active_effects, enough_time_for_earnings, 
-    get_current_book, last_location_with_bed, 
-    last_combat_location, faved_stances, 
-    selected_stance, 
+import { current_enemies, options,
+    can_work, current_location,
+    active_effects, enough_time_for_earnings,
+    get_current_book, last_location_with_bed,
+    last_combat_location, faved_stances,
+    selected_stance,
     global_flags} from "./main.js";
 import { dialogues } from "./dialogues.js";
 import { activities } from "./activities.js";
@@ -103,9 +103,9 @@ const message_count = {
 
 const stats_divs = {strength: document.getElementById("strength_slot"), agility: document.getElementById("agility_slot"),
                     dexterity: document.getElementById("dexterity_slot"), intuition: document.getElementById("intuition_slot"),
-                    magic: document.getElementById("magic_slot"), 
-                    attack_speed: document.getElementById("attack_speed_slot"), attack_power: document.getElementById("attack_power_slot"), 
-                    defense: document.getElementById("defense_slot"), crit_rate: document.getElementById("crit_rate_slot"), 
+                    magic: document.getElementById("magic_slot"),
+                    attack_speed: document.getElementById("attack_speed_slot"), attack_power: document.getElementById("attack_power_slot"),
+                    defense: document.getElementById("defense_slot"), crit_rate: document.getElementById("crit_rate_slot"),
                     crit_multiplier: document.getElementById("crit_multiplier_slot")
                     };
 
@@ -205,13 +205,13 @@ function create_item_tooltip_content({item, options={}}) {
     let item_tooltip = "";
     item_tooltip = `<b>${item.getName()}</b>`;
     if(item.description) {
-        item_tooltip += `<br>${item.description}`; 
+        item_tooltip += `<br>${item.description}`;
     }
 
     let quality = item.quality;
 
     //add stats if can be equipped
-    if(item.item_type === "EQUIPPABLE"){ 
+    if(item.item_type === "EQUIPPABLE"){
         if(options?.quality && options.quality[0]) {
             quality = options.quality[0];
         }
@@ -249,13 +249,13 @@ function create_item_tooltip_content({item, options={}}) {
 
         if(!options.skip_quality && options?.quality?.length == 2) {
             if(item.getAttack) {
-                item_tooltip += 
+                item_tooltip +=
                     `<br><br>Attack: ${Math.round(10*item.getAttack(options.quality[0]), true)/10}-${Math.round(10*item.getAttack(options.quality[1], true))/10}`;
-            } else if(item.getDefense) { 
-                item_tooltip += 
+            } else if(item.getDefense) {
+                item_tooltip +=
                 `<br><br>Defense: ${Math.round(10*item.getDefense(options.quality[0]))/10}-${Math.round(10*item.getDefense(options.quality[1]))/10}`;
             } else if(item.offhand_type === "shield") {
-                item_tooltip += 
+                item_tooltip +=
                 `<br><br>Can block up to: ${Math.round(10*item.getShieldStrength(options.quality[0])*(character.stats.total_multiplier.block_strength))/10}-${Math.round(10*item.getShieldStrength(options.quality[1])*(character.stats.total_multiplier.block_strength))/10} damage [base: ${item.getShieldStrength(options.quality[0])}-${item.getShieldStrength(options.quality[1])}]`;
             }
 
@@ -267,23 +267,23 @@ function create_item_tooltip_content({item, options={}}) {
             Object.keys(equip_stats_0).forEach(effect_key => {
 
                 if(equip_stats_0[effect_key].flat != null) {
-                    item_tooltip += 
+                    item_tooltip +=
                     `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: +${equip_stats_0[effect_key].flat}-${equip_stats_1[effect_key].flat}`;
                 }
                 if(equip_stats_0[effect_key].multiplier != null) {
-                    item_tooltip += 
+                    item_tooltip +=
                     `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: x${equip_stats_0[effect_key].multiplier}-${equip_stats_1[effect_key].multiplier}`;
             }
             });
         } else {
             if(item.getAttack) {
-                item_tooltip += 
+                item_tooltip +=
                     `<br><br>Attack: ${Math.round(10*item.getAttack())/10}`;
-            } else if(item.getDefense) { 
-                item_tooltip += 
+            } else if(item.getDefense) {
+                item_tooltip +=
                 `<br><br>Defense: ${Math.round(10*item.getDefense())/10}`;
             } else if(item.offhand_type === "shield") {
-                item_tooltip += 
+                item_tooltip +=
                 `<br><br>Can block up to: ${Math.round(10*item.getShieldStrength()*(character.stats.total_multiplier.block_strength))/10} damage [base: ${item.getShieldStrength()}]`;
             }
 
@@ -294,17 +294,17 @@ function create_item_tooltip_content({item, options={}}) {
             Object.keys(equip_stats).forEach(function(effect_key) {
 
                 if(equip_stats[effect_key].flat != null) {
-                    item_tooltip += 
+                    item_tooltip +=
                     `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: +${equip_stats[effect_key].flat}`;
                 }
                 if(equip_stats[effect_key].multiplier != null) {
-                    item_tooltip += 
+                    item_tooltip +=
                     `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: x${equip_stats[effect_key].multiplier}`;
             }
             });
         }
         item_tooltip += "<br>";
-    } 
+    }
     else if (item.item_type === "USABLE") {
         item_tooltip += `<br>`;
 
@@ -349,11 +349,11 @@ function create_item_tooltip_content({item, options={}}) {
         Object.keys(item.stats).forEach(function(effect_key) {
 
             if(item.stats[effect_key].flat != null) {
-                item_tooltip += 
+                item_tooltip +=
                 `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: +${item.stats[effect_key].flat}`;
             }
             if(item.stats[effect_key].multiplier != null) {
-                item_tooltip += 
+                item_tooltip +=
                 `<br>${capitalize_first_letter(effect_key).replace("_"," ")}: x${item.stats[effect_key].multiplier}`;
             }
         });
@@ -370,7 +370,7 @@ function create_item_tooltip_content({item, options={}}) {
     return item_tooltip;
 }
 
-/** 
+/**
  * @param {Object} item_effect from item effects[]
  */
 function create_effect_tooltip(effect_name, duration) {
@@ -379,7 +379,7 @@ function create_effect_tooltip(effect_name, duration) {
     tooltip.classList.add("active_effect_tooltip");
 
     const name_span = document.createElement("span");
-    name_span.classList.add("active_effect_name"); 
+    name_span.classList.add("active_effect_name");
     name_span.innerHTML = `'${effect.name}' : `;
     const duration_span = document.createElement("span");
     duration_span.classList.add("active_effect_duration");
@@ -394,8 +394,8 @@ function create_effect_tooltip(effect_name, duration) {
     for(const [key, stat_value] of Object.entries(effect.effects.stats)) {
         tooltip.innerHTML += `<br>${capitalize_first_letter(key.replaceAll("_", " ").replace("flat","").replace("percent",""))} `;
         //for regeneration bonuses, it is assumed they are only flat and not multiplicative
-        if(key === "health_regeneration_flat" || key ===  "stamina_regeneration_flat" || key ===  "mana_regeneration_flat") 
-        {   
+        if(key === "health_regeneration_flat" || key ===  "stamina_regeneration_flat" || key ===  "mana_regeneration_flat")
+        {
             const sign = stat_value.flat > 0? "+":"";
             tooltip.innerHTML += `: ${sign}${stat_value.flat}`;
         } else if(key === "health_regeneration_percent" || key === "stamina_regeneration_percent" || key === "mana_regeneration_percent") {
@@ -464,11 +464,11 @@ function end_activity_animation() {
         case "hero_blocked":
             group_to_add = "message_combat";
             message_count.message_combat += 1;
-            break;    
+            break;
         case "enemy_missed":
             group_to_add = "message_combat";
             message_count.message_combat += 1;
-            break;    
+            break;
         case "hero_attacked_critically":
             class_to_add = "message_hero_attacked_critically";
             group_to_add = "message_combat";
@@ -499,7 +499,7 @@ function end_activity_animation() {
             group_to_add = "message_unlocks";
             message_count.message_unlocks += 1;
             break;
-        case "activity_unlocked": 
+        case "activity_unlocked":
             //currently uses default style class
             group_to_add = "message_unlocks";
             message_count.message_unlocks += 1;
@@ -564,7 +564,7 @@ function end_activity_animation() {
     message.innerHTML = message_to_add + "<div class='message_border'> </>";
 
     message_log.appendChild(message);
-    
+
     message_log.scrollTop = message_log.scrollHeight;
 
 }
@@ -573,7 +573,7 @@ function format_rewards(rewards) {
     let formatted = '';
     if(rewards.stats) {
         const stats = Object.keys(rewards.stats);
-        
+
         formatted = `+${rewards.stats[stats[0]]} ${stat_names[stats[0]]}`;
         for(let i = 1; i < stats.length; i++) {
             formatted += `, +${rewards.stats[stats[i]]} ${stat_names[stats[i]]}`;
@@ -625,10 +625,10 @@ function clear_message_log() {
 }
 
 /**
- * @param {Array} loot_list [{item, count},...] 
+ * @param {Array} loot_list [{item, count},...]
  */
 function log_loot(loot_list, is_combat=true) {
-    
+
     if(loot_list.length == 0) {
         return;
     }
@@ -680,7 +680,7 @@ function update_displayed_money() {
 }
 
 /**
- * 
+ *
  * @returns {HTMLElement}
  */
 function create_trade_buttons() {
@@ -705,7 +705,7 @@ function create_trade_buttons() {
     trade_button_max.innerText = "all";
     trade_button_max.setAttribute("data-trade_ammount", Infinity);
     trade_buttons.appendChild(trade_button_max);
-    
+
     return trade_buttons;
 }
 
@@ -766,7 +766,7 @@ function sort_displayed_inventory({sort_by = "name", target = "character", chang
             return -1;
         } else if(!a.classList.contains("equipped_item_control") && b.classList.contains("equipped_item_control")){
             return 1;
-        } 
+        }
 
         if(a.classList.contains("item_to_trade") && !b.classList.contains("item_to_trade")) {
             return 1;
@@ -778,12 +778,12 @@ function sort_displayed_inventory({sort_by = "name", target = "character", chang
             return 1;
         } else if(!a.classList.contains("character_item_equippable") && b.classList.contains("character_item_equippable")){
             return -1;
-        } 
+        }
         if(a.classList.contains("trader_item_equippable") && !b.classList.contains("trader_item_equippable")) {
             return 1;
         } else if(!a.classList.contains("trader_item_equippable") && b.classList.contains("trader_item_equippable")){
             return -1;
-        } 
+        }
 
         if(a.children[0].children[0].children[0].innerText === "[Comp]" && b.children[0].children[0].children[0].innerText !== "[Comp]") {
             return 1;
@@ -814,12 +814,12 @@ function sort_displayed_inventory({sort_by = "name", target = "character", chang
             } else if(name_a < name_b) {
                 return minus;
             } else {
-                //if same name, sort based on quality 
+                //if same name, sort based on quality
                 //works similar to sorting by value but is more precise
                 //(shouldn't be possible to reach this for quality-less items)
                 let value_a = Number.parseInt(a.dataset.item_quality);
                 let value_b = Number.parseInt(b.dataset.item_quality);
-                
+
                 if(value_a > value_b) {
                     return plus;
                 } else {
@@ -828,10 +828,10 @@ function sort_displayed_inventory({sort_by = "name", target = "character", chang
             }
 
         } else if(sort_by === "price") {
-            
+
             let value_a = Number.parseInt(a.getAttribute(`data-item_value`));
             let value_b = Number.parseInt(b.getAttribute(`data-item_value`));
-      
+
             if(value_a > value_b) {
                 return plus;
             } else {
@@ -856,7 +856,7 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
     Object.keys(trader.inventory).forEach(function(key) {
         let item_count = trader.inventory[key].count;
         for(let i = 0; i < to_buy.items.length; i++) {
-            
+
             if(key === to_buy.items[i].item_key) {
                 item_count -= Number(to_buy.items[i].count);
 
@@ -871,7 +871,7 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
 
         trader_inventory_div.appendChild(create_inventory_item_div({key, item_count, target: "trader"}));
     });
-    
+
     for(let i = 0; i < to_sell.items.length; i++) {
         //add items from to_sell to display
         trader_inventory_div.appendChild(create_inventory_item_div({target: "trader", trade_index: i}));
@@ -882,13 +882,13 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
 
 /**
  * updates displayed inventory of the character (only inventory, worn equipment is managed by separate method)
- * 
+ *
  * if item_name is passed, it will instead only update the display of that one item
- * 
+ *
  * currently item_key is only used for books
  */
- function update_displayed_character_inventory({item_key, character_sorting="name", sorting_direction="asc", was_anything_new_added=false} = {}) {    
-    
+ function update_displayed_character_inventory({item_key, character_sorting="name", sorting_direction="asc", was_anything_new_added=false} = {}) {
+
     //removal of unneeded divs
     if(!item_key){
         Object.keys(item_divs).forEach(div_key => {
@@ -974,7 +974,7 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
                         //don't display the equipped tools
                         return;
                     }
-    
+
                     item_divs[equip_slot] = create_inventory_item_div({key: equip_slot, target: "character", is_equipped: true});
                     inventory_div.appendChild(item_divs[equip_slot]);
                     was_anything_new_added = true;
@@ -989,7 +989,7 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
                 inventory_div.appendChild(item_buying_divs[key]);
             } else {
                 //verify and update count
-                
+
                 let div_count = item_divs[key]?.dataset.item_count ?? 0;
 
                 let item_count = to_buy.items[i].count;
@@ -1003,7 +1003,7 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
             }
         }
     }
-    
+
     if(!item_key && was_anything_new_added) {
         sort_displayed_inventory({target: "character", sort_by: character_sorting, direction: sorting_direction});
     }
@@ -1012,12 +1012,12 @@ function update_displayed_trader_inventory({trader_sorting} = {}) {
 /**
  * creates a single item div for hero/trader, used to fill displayed inventories
  * @param {Object} params
- * @param {String} params.key 
+ * @param {String} params.key
  * @param {Number} params.item_count
  * @param {String} params.target character/trader
  * @param {Boolean} params.is_equipped
  * @param {Number} params.trade_index index in to_buy/to_sell
- * @returns 
+ * @returns
  */
 function create_inventory_item_div({key, item_count, target, is_equipped, trade_index}) {
 
@@ -1111,7 +1111,7 @@ function create_inventory_item_div({key, item_count, target, is_equipped, trade_
     } else {
         item_name_div.innerHTML = `<span class = "item_category"></span> <span class = "item_name">${target_item.getName()}</span>`;
     }
-    
+
     if(item_count > 1) {
         item_name_div.innerHTML += `<span class="item_count"> x${item_count}</span>`;
     } else {
@@ -1158,8 +1158,8 @@ function create_inventory_item_div({key, item_count, target, is_equipped, trade_
                 item_additional.appendChild(item_unequip_div);
             }
         }
-    } 
-    
+    }
+
     item_additional.appendChild(create_trade_buttons());
 
 
@@ -1181,7 +1181,7 @@ function create_inventory_item_div({key, item_count, target, is_equipped, trade_
  */
 function update_displayed_equipment() {
     Object.keys(equipment_slots_divs).forEach(function(key) {
-        let eq_tooltip; 
+        let eq_tooltip;
 
         if(character.equipment[key] == null) { //no item in slot
             eq_tooltip = document.createElement("span");
@@ -1190,7 +1190,7 @@ function update_displayed_equipment() {
             equipment_slots_divs[key].classList.add("equipment_slot_empty");
             eq_tooltip.innerHTML = `Your ${key} slot`;
         }
-        else 
+        else
         {
             equipment_slots_divs[key].innerHTML = character.equipment[key].getName();
             equipment_slots_divs[key].classList.remove("equipment_slot_empty");
@@ -1220,7 +1220,7 @@ function update_displayed_book(book_id) {
 /**
  * sets visibility of divs for enemies (based on how many there are in current combat),
  * and enemies' AP / EP
- * 
+ *
  * called when new enemies get loaded
  */
 function update_displayed_enemies() {
@@ -1248,7 +1248,7 @@ function update_displayed_enemies() {
             if(current_enemies[i].size === "large") {
                 hero_evasion_chance_modifier *= skills["Giant slayer"].get_coefficient("multiplicative");
             }
-        
+
             const evasion_chance = 1 - get_hit_chance(character.stats.full.attack_points, current_enemies[i].stats.agility * Math.sqrt(current_enemies[i].stats.intuition ?? 1)) * hero_hit_chance_modifier;
             let hit_chance = get_hit_chance(current_enemies[i].stats.dexterity * Math.sqrt(current_enemies[i].stats.intuition ?? 1), character.stats.full.evasion_points) / hero_evasion_chance_modifier;
 
@@ -1265,7 +1265,7 @@ function update_displayed_enemies() {
 
         } else {
             enemies_div.children[i].children[0].style.display = "none"; //just hide it
-        }     
+        }
     }
 }
 
@@ -1282,7 +1282,7 @@ function update_displayed_health_of_enemies() {
         }
 
         //update size of health bar
-        enemies_div.children[i].children[0].children[2].children[0].children[0].style.width = 
+        enemies_div.children[i].children[0].children[2].children[0].children[0].style.width =
             Math.max(0, 100*current_enemies[i].stats.health/current_enemies[i].stats.max_health) + "%";
 
             enemies_div.children[i].children[0].children[2].children[1].innerText = `${Math.ceil(current_enemies[i].stats.health)}/${Math.ceil(current_enemies[i].stats.max_health)} hp`;
@@ -1301,12 +1301,12 @@ function update_displayed_normal_location(location) {
     enemy_count_div.style.display = "none";
     document.documentElement.style.setProperty('--actions_div_height', getComputedStyle(document.body).getPropertyValue('--actions_div_height_default'));
     document.documentElement.style.setProperty('--actions_div_top', getComputedStyle(document.body).getPropertyValue('--actions_div_top_default'));
-    
+
     inventory_switch.click();
     combat_switch.style.pointerEvents = "none";
     combat_switch.style.cursor = "default";
     combat_switch.style.color = "gray";
-    
+
     ////////////////////////////////////
     //add buttons for starting dialogues
 
@@ -1327,7 +1327,7 @@ function update_displayed_normal_location(location) {
     });
 
     if(available_dialogues.length > 2) {
-        //there's multiple -> add a choice to location actions that will show all available dialogues        
+        //there's multiple -> add a choice to location actions that will show all available dialogues
         const dialogues_button = document.createElement("div");
         dialogues_button.setAttribute("data-location", location.name);
         dialogues_button.classList.add("location_choices");
@@ -1344,7 +1344,7 @@ function update_displayed_normal_location(location) {
 
     const available_traders = location.traders.filter(trader => traders[trader].is_unlocked);
 
-    if(available_traders.length > 2) {     
+    if(available_traders.length > 2) {
         const traders_button = document.createElement("div");
         traders_button.setAttribute("data-location", location.name);
         traders_button.classList.add("location_choices");
@@ -1358,11 +1358,11 @@ function update_displayed_normal_location(location) {
     ///////////////////////////
     //add buttons to start jobs
 
-    const available_jobs = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "JOB" 
+    const available_jobs = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "JOB"
                                                                     && activities[activity.activity_name].is_unlocked
                                                                     && activity.is_unlocked
                                                                     && activities[activity.activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length == 0);
-    if(available_jobs.length > 2) {     
+    if(available_jobs.length > 2) {
         const jobs_button = document.createElement("div");
         jobs_button.setAttribute("data-location", location.name);
         jobs_button.classList.add("location_choices");
@@ -1376,11 +1376,11 @@ function update_displayed_normal_location(location) {
     ///////////////////////////////
     //add buttons to start training
 
-    const available_trainings = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "TRAINING" 
+    const available_trainings = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "TRAINING"
                                                                     && activities[activity.activity_name].is_unlocked
                                                                     && activity.is_unlocked
                                                                     && activities[activity.activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length == 0);
-    if(available_trainings.length > 2) {     
+    if(available_trainings.length > 2) {
         const trainings_button = document.createElement("div");
         trainings_button.setAttribute("data-location", location.name);
         trainings_button.classList.add("location_choices");
@@ -1395,11 +1395,11 @@ function update_displayed_normal_location(location) {
     //add buttons to start gathering
 
     if(global_flags.is_gathering_unlocked) {
-        const available_gatherings = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "GATHERING" 
+        const available_gatherings = Object.values(location.activities).filter(activity => activities[activity.activity_name].type === "GATHERING"
                                                                         && activities[activity.activity_name].is_unlocked
                                                                         && activity.is_unlocked
                                                                         && activities[activity.activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length == 0);
-        if(available_gatherings.length > 2) {     
+        if(available_gatherings.length > 2) {
             const gatherings_button = document.createElement("div");
             gatherings_button.setAttribute("data-location", location.name);
             gatherings_button.classList.add("location_choices");
@@ -1414,16 +1414,16 @@ function update_displayed_normal_location(location) {
     ///////////////////////////
     //add button to go to sleep
 
-    if(location.sleeping) { 
+    if(location.sleeping) {
         const start_sleeping_div = document.createElement("div");
-        
+
         start_sleeping_div.innerHTML = '<i class="material-icons">bed</i>  ' + location.sleeping.text;
         start_sleeping_div.id = "start_sleeping_div";
         start_sleeping_div.setAttribute('onclick', 'start_sleeping()');
 
         action_div.appendChild(start_sleeping_div);
     }
-    
+
     ////////////////////////////
     //add buttons for challenges
     //not getting foldered since having too many is not expected
@@ -1463,19 +1463,19 @@ function update_displayed_normal_location(location) {
 }
 
 /**
- * 
- * @param {*} location 
- * @param {*} category 
+ *
+ * @param {*} location
+ * @param {*} category
  * @return {Array} an array of html nodes presenting the available choices
  */
 function create_location_choices({location, category, add_icons = true, is_combat = false}) {
     let choice_list = [];
-    
+
     if(category === "talk") {
-        for(let i = 0; i < location.dialogues.length; i++) { 
+        for(let i = 0; i < location.dialogues.length; i++) {
             if(!dialogues[location.dialogues[i]].is_unlocked || dialogues[location.dialogues[i]].is_finished) { //skip if dialogue is not available
                 continue;
-            } 
+            }
 
             const lines_available = location.dialogues.filter(dialogue => {
                     let lines_available = false;
@@ -1491,11 +1491,11 @@ function create_location_choices({location, category, add_icons = true, is_comba
             if(!lines_available) {
                 continue;
             }
-            
+
             const dialogue_div = document.createElement("div");
-    
+
             //if(Object.keys(dialogues[location.dialogues[i]].textlines).length > 0) { //has any textlines
-                
+
             dialogue_div.innerHTML = add_icons ? `<i class="material-icons">question_answer</i>  ` : "";
             dialogue_div.innerHTML += dialogues[location.dialogues[i]].starting_text;
             dialogue_div.classList.add("start_dialogue");
@@ -1505,12 +1505,12 @@ function create_location_choices({location, category, add_icons = true, is_comba
             //}
         }
     } else if (category === "trade") {
-        for(let i = 0; i < location.traders.length; i++) { 
+        for(let i = 0; i < location.traders.length; i++) {
             if(!traders[location.traders[i]].is_unlocked) { //skip if trader is not available
                 continue;
-            } 
-            
-            const trader_div = document.createElement("div");  
+            }
+
+            const trader_div = document.createElement("div");
 
             trader_div.innerHTML = add_icons ? `<i class="material-icons">storefront</i>   ` : "";
             trader_div.innerHTML += traders[location.traders[i]].trade_text;
@@ -1521,13 +1521,13 @@ function create_location_choices({location, category, add_icons = true, is_comba
         }
     } else if (category === "work") {
         Object.keys(location.activities).forEach(key => {
-            if(!activities[location.activities[key].activity_name]?.is_unlocked 
-                || !location.activities[key]?.is_unlocked 
-                || activities[location.activities[key].activity_name].type !== "JOB") 
+            if(!activities[location.activities[key].activity_name]?.is_unlocked
+                || !location.activities[key]?.is_unlocked
+                || activities[location.activities[key].activity_name].type !== "JOB")
             {
                 return;
             }
-            
+
             const activity_div = document.createElement("div");
 
             activity_div.innerHTML = `<i class="material-icons">work_outline</i>  `;
@@ -1546,21 +1546,21 @@ function create_location_choices({location, category, add_icons = true, is_comba
             if(!location.activities[key].infinite){
                 job_tooltip.innerHTML = `Available from ${location.activities[key].availability_time.start} to ${location.activities[key].availability_time.end} <br>`;
             }
-            job_tooltip.innerHTML += `Pays ${format_money(location.activities[key].get_payment())} per every ` +  
+            job_tooltip.innerHTML += `Pays ${format_money(location.activities[key].get_payment())} per every ` +
                     `${format_time({time: {minutes: location.activities[key].working_period}})} worked`;
-            
+
 
             activity_div.appendChild(job_tooltip);
-    
+
             activity_div.innerHTML += location.activities[key].starting_text;
             choice_list.push(activity_div);
         });
     } else if (category === "train") {
         Object.keys(location.activities).forEach(key => {
-            if(!activities[location.activities[key].activity_name]?.is_unlocked 
-                || !location.activities[key]?.is_unlocked 
+            if(!activities[location.activities[key].activity_name]?.is_unlocked
+                || !location.activities[key]?.is_unlocked
                 || activities[location.activities[key].activity_name].type !== "TRAINING"
-                || activities[location.activities[key].activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length > 0) 
+                || activities[location.activities[key].activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length > 0)
             {
                 return;
             }
@@ -1571,16 +1571,16 @@ function create_location_choices({location, category, add_icons = true, is_comba
             activity_div.classList.add("activity_div", "start_activity");
             activity_div.setAttribute("data-activity", key);
             activity_div.setAttribute("onclick", "start_activity(this.getAttribute('data-activity'));");
-    
+
             activity_div.innerHTML += location.activities[key].starting_text;
             choice_list.push(activity_div);
         });
     } else if (category === "gather") {
         Object.keys(location.activities).forEach(key => {
-            if(!activities[location.activities[key].activity_name]?.is_unlocked 
-                || !location.activities[key]?.is_unlocked 
+            if(!activities[location.activities[key].activity_name]?.is_unlocked
+                || !location.activities[key]?.is_unlocked
                 || activities[location.activities[key].activity_name].type !== "GATHERING"
-                || activities[location.activities[key].activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length > 0) 
+                || activities[location.activities[key].activity_name].base_skills_names.filter(skill => !skills[skill].is_unlocked).length > 0)
             {
                 return;
             }
@@ -1593,14 +1593,14 @@ function create_location_choices({location, category, add_icons = true, is_comba
             activity_div.setAttribute("onclick", "start_activity(this.getAttribute('data-activity'));");
 
             activity_div.appendChild(create_gathering_tooltip(location.activities[key]));
-    
+
             activity_div.innerHTML += location.activities[key].starting_text;
             choice_list.push(activity_div);
         });
     } else if (category === "travel") {
         if(!is_combat){
-            for(let i = 0; i < location.connected_locations.length; i++) { 
-                
+            for(let i = 0; i < location.connected_locations.length; i++) {
+
                 if(location.connected_locations[i].location.is_unlocked == false || location.connected_locations[i].location.is_finished) { //skip if not unlocked or if finished
                     continue;
                 }
@@ -1610,7 +1610,7 @@ function create_location_choices({location, category, add_icons = true, is_comba
                 }
 
                 const action = document.createElement("div");
-                
+
                 if("connected_locations" in location.connected_locations[i].location) {// check again if connected location is normal or combat
                     action.classList.add("travel_normal");
                     if("custom_text" in location.connected_locations[i]) {
@@ -1628,25 +1628,25 @@ function create_location_choices({location, category, add_icons = true, is_comba
                         action.innerHTML = `<i class="material-icons">warning_amber</i>  ` + "Enter the [" + location.connected_locations[i].location.name+"]";
                     }
                 }
-            
+
                 action.classList.add("action_travel");
                 action.setAttribute("data-travel", location.connected_locations[i].location.name);
                 action.setAttribute("onclick", "change_location(this.getAttribute('data-travel'));");
-        
+
                 choice_list.push(action);
-            } 
+            }
 
             if(last_combat_location && location.connected_locations.filter(loc => loc.location.name === last_combat_location).length == 0) {
                 const last_combat = locations[last_combat_location];
                 const action = document.createElement("div");
                 action.classList.add("travel_combat");
-                
+
                 action.innerHTML = `<i class="material-icons">warning_amber</i>  Quick return to [${last_combat.name}]`;
-                
+
                 action.classList.add("action_travel");
                 action.setAttribute("data-travel", last_combat.name);
                 action.setAttribute("onclick", "change_location(this.getAttribute('data-travel'));");
-        
+
                 choice_list.push(action);
             }
         } else {
@@ -1668,21 +1668,21 @@ function create_location_choices({location, category, add_icons = true, is_comba
 
             const action = document.createElement("div");
             action.classList.add("travel_normal");
-            
+
             action.innerHTML = `<i class="material-icons">directions</i> Quick return to [${last_bed.name}]`;
-            
+
             action.classList.add("action_travel");
             action.setAttribute("data-travel", last_bed.name);
             action.setAttribute("onclick", "change_location(this.getAttribute('data-travel'));");
-    
+
             choice_list.push(action);
         }
 
         choice_list.sort((a,b) => b.classList.contains("travel_normal") - a.classList.contains("travel_normal"));
     } else if (category === "challenge") {
         const available_challenges = location.connected_locations.filter(location => {if(location.location.is_challenge && location.location.is_unlocked && !location.location.is_finished) return true});
-       
-        for(let i = 0; i < available_challenges.length; i++) { 
+
+        for(let i = 0; i < available_challenges.length; i++) {
             const action = document.createElement("div");
 
             action.classList.add("travel_combat");
@@ -1692,11 +1692,11 @@ function create_location_choices({location, category, add_icons = true, is_comba
             else {
                 action.innerHTML = `<i class="material-icons">warning_amber</i>  ` + "Enter the " + available_challenges[i].location.name;
             }
-            
+
             action.classList.add("action_travel");
             action.setAttribute("data-travel", available_challenges[i].location.name);
             action.setAttribute("onclick", "change_location(this.getAttribute('data-travel'));");
-    
+
             choice_list.push(action);
         }
     }
@@ -1727,7 +1727,7 @@ function update_displayed_combat_location(location) {
         combat_switch.click();
         combat_switch.classList.add("active_selection_button");
         inventory_switch.classList.remove("active_selection_button");
-    } 
+    }
     combat_switch.style.pointerEvents = "auto";
     combat_switch.style.cursor = "pointer";
     combat_switch.style.color = "white";
@@ -1751,7 +1751,7 @@ function update_displayed_combat_location(location) {
 
     location_tooltip.innerText = current_location.getDescription();
     location_tooltip.classList.add("location_tooltip");
-    
+
     document.getElementById("location_description_div").innerText = current_location.getDescription();
     create_location_types_display(current_location);
 }
@@ -1769,7 +1769,7 @@ function create_location_types_display(current_location){
 
         const {type, stage} = current_location.types[i];
         const {effects} = location_types[type].stages[stage];
-        
+
         if(effects?.multipliers) {
             type_tooltip.innerHTML += `<br>`;
             Object.keys(effects.multipliers).forEach(stat => {
@@ -1797,14 +1797,14 @@ function open_crafting_window() {
     action_div.style.display = "none";
     document.getElementById("crafting_window").style.display = "block";
     document.getElementById("crafting_mainpage_buttons").children[0].click();
-    
+
     let elements = document.querySelectorAll(`[data-crafting_subcategory]`);
     for(let i = 0; i < elements.length; i++) {
         if(elements[i].dataset.crafting_subcategory !== "items") {
             elements[i].style.display = "none";
         } else {
             elements[i].style.display = "";
-        } 
+        }
     }
 
     elements = document.getElementsByClassName("crafting_subpage_buttons");
@@ -1823,19 +1823,19 @@ function close_crafting_window() {
 
 /**
  * switches between main pages of crafting menu (crafting, alchemy, cooking, etc)
- * @param {String} category 
+ * @param {String} category
  */
 function switch_crafting_recipes_page(category) {
     const elements = document.querySelectorAll('[data-crafting_category]');
     for(let i = 0; i < elements.length; i++) {
-        
+
         if(!elements[i].dataset.crafting_subcategory) {
             if(elements[i].dataset.crafting_category !== category) {
                 elements[i].style.display = "none";
             } else {
                 elements[i].style.display = "";
             }
-        } 
+        }
     }
 
     unexpand_displayed_recipes();
@@ -1843,8 +1843,8 @@ function switch_crafting_recipes_page(category) {
 
 /**
  * switches between subpages of a crafting page (items-components-equipment)
- * @param {String} category 
- * @param {String} subcategory 
+ * @param {String} category
+ * @param {String} subcategory
  */
 function switch_crafting_recipes_subpage(category, subcategory) {
     const elements = document.querySelectorAll(`[data-crafting_category='${category}'], [data-crafting_subcategory]`);
@@ -1855,7 +1855,7 @@ function switch_crafting_recipes_subpage(category, subcategory) {
                     elements[i].style.display = "none";
                 } else {
                     elements[i].style.display = "";
-                } 
+                }
             }
         }
     }
@@ -1917,7 +1917,7 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
             if(event.target.classList.contains("recipe_name") || event.target.classList.contains("crafting_dropdown_icon")) {
                 window.updateDisplayedMaterialChoice({category, subcategory, recipe_id});
                 toggle_exclusive_class({element: recipe_div, class_name: "selected_recipe"});
-            } 
+            }
         });
 
         recipe_div.append(material_selection);
@@ -1934,7 +1934,7 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
             if(event.target.classList.contains("recipe_name") || event.target.classList.contains("crafting_dropdown_icon")) {
                 window.updateDisplayedMaterialChoice({category, subcategory, recipe_id});
                 toggle_exclusive_class({element: recipe_div, class_name: "selected_recipe"});
-            } 
+            }
         });
 
         recipe_div.append(material_selection);
@@ -1948,19 +1948,19 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
         } else {
             console.warn(`Recipe "${category}" -> "${subcategory}" -> "${recipe_id}" has wrong type of resulting item ("${recipe.item_type}")`)
         }
-        
+
         recipe_div.children[0].innerHTML = '<i class="material-icons icon crafting_dropdown_icon"> keyboard_double_arrow_down </i>' +  recipe_div.children[0].innerHTML;
 
         const component_selection_1 = document.createElement("div"); //weapon head or internal armor
         component_selection_1.innerHTML = `<span class="crafting_selection"><i class="material-icons icon subcrafting_dropdown_icon"> keyboard_double_arrow_down </i>Select a [${recipe.components[0]}]</span>`;
-        
+
         const component_1_list = document.createElement("div");
         component_1_list.classList.add("folded_crafting_selection");
         component_selection_1.appendChild(component_1_list);
 
         const component_selection_2 = document.createElement("div"); //weapon handle or external armor
         component_selection_2.innerHTML = `<span class="crafting_selection"><i class="material-icons icon subcrafting_dropdown_icon"> keyboard_double_arrow_down </i>Select a [${recipe.components[1]}]</span>`;
-        
+
         const component_2_list = document.createElement("div");
         component_2_list.classList.add("folded_crafting_selection");
         component_selection_2.appendChild(component_2_list);
@@ -1971,13 +1971,13 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
 
         recipe_div.addEventListener("click", (event)=>{
             if(event.target.classList.contains("recipe_name") || event.target.classList.contains("crafting_dropdown_icon")) {
-                
+
                 const expanded_divs = recipe_div.querySelectorAll(".selected_component_category");
                 for(let i = 0; i < expanded_divs.length; i++) {
                     expanded_divs.item(i).classList.remove("selected_component_category");
                     expanded_divs.item(i).nextSibling.classList.remove("selected_component_list");
                 }
-                
+
                 toggle_exclusive_class({element: recipe_div, class_name: "selected_recipe"});
                 window.updateDisplayedComponentChoice({category, subcategory, recipe_id});
 
@@ -1990,8 +1990,8 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
             if(event.target.classList.contains("crafting_selection")) {
                 component_selection_1.children[1].classList.toggle("selected_component_list");
                 component_selection_1.children[0].classList.toggle("selected_component_category");
-                if(recipe_div.querySelectorAll(".folded_crafting_selection").item(0).lastChild 
-                    && !is_element_above_x(recipe_div.querySelectorAll(".folded_crafting_selection").item(0).lastChild, document.getElementById("exit_crafting_button"))) 
+                if(recipe_div.querySelectorAll(".folded_crafting_selection").item(0).lastChild
+                    && !is_element_above_x(recipe_div.querySelectorAll(".folded_crafting_selection").item(0).lastChild, document.getElementById("exit_crafting_button")))
                 {
                     recipe_div.querySelectorAll(".folded_crafting_selection").item(0).lastChild.scrollIntoView({block: "end", inline: "nearest"});
                 }
@@ -2026,7 +2026,7 @@ function add_crafting_recipe_to_display({category, subcategory, recipe_id}) {
 }
 
 /**
- * updates all displayed recipes; 
+ * updates all displayed recipes;
  * needs to be called whenever something is crafted (in case some recipe became unavailable due to lack of materials) and/or whenever a crafting-related skill levels up
  */
 function update_displayed_crafting_recipes() {
@@ -2115,7 +2115,7 @@ function update_recipe_tooltip({category, subcategory, recipe_id, components}) {
             const material_key = material_selections_div.children[i].dataset.item_key;
             const {id} = JSON.parse(material_key);
             const material_recipe = recipe.materials.filter(material => material.material_id === id);
-            
+
             material_selections_div.children[i].children[1].innerHTML = create_recipe_tooltip_content({category, subcategory, recipe_id, material: material_recipe[0]});
         }
     } else if(subcategory === "equipment") {
@@ -2164,7 +2164,7 @@ function create_recipe_tooltip_content({category, subcategory, recipe_id, materi
             tooltip += `Result:<br><div class="recipe_result">Select one component from each category</div>`;
         } else if(components.length == 2) {
             let item = "";
-            
+
             if(recipe.item_type === "Weapon") {
                 item = new Weapon(
                     {
@@ -2218,7 +2218,7 @@ function update_displayed_component_choice({category, recipe_id, component_keys 
     const recipe = recipes[category]["equipment"][recipe_id];
 
     const component_selections_div = crafting_pages[category]["equipment"].querySelector(`[data-recipe_id='${recipe_id}']`).children[1].children;
-    
+
     component_selections_div[0].children[1].innerHTML = "";
     component_selections_div[1].children[1].innerHTML = "";
 
@@ -2241,7 +2241,7 @@ function update_displayed_component_choice({category, recipe_id, component_keys 
             item_div.dataset.item_name = components[i][j].item.getName();
             item_div.dataset.component_tier = components[i][j].item.component_tier;
             item_div.appendChild(create_item_tooltip(components[i][j].item, {class_name: "recipe_tooltip"}));
-            
+
             item_div.addEventListener("click", ()=>{
                 toggle_exclusive_class({element: item_div, siblings_only: true, class_name: "selected_component"});
                 const components = [];
@@ -2256,7 +2256,7 @@ function update_displayed_component_choice({category, recipe_id, component_keys 
                 }
                 update_recipe_tooltip({category, subcategory: "equipment", recipe_id, components});
             });
-                
+
             component_selections_div[i].children[1].appendChild(item_div);
 
             if(component_keys[item_div.dataset.item_key]) {
@@ -2267,7 +2267,7 @@ function update_displayed_component_choice({category, recipe_id, component_keys 
     if(!is_element_above_x(recipe_div.querySelector(".recipe_creation_button"), document.getElementById("exit_crafting_button"))) {
         recipe_div.querySelector(".recipe_creation_button").scrollIntoView({block: "end", inline: "nearest"});
     }
-    
+
     for(let i = 0; i < 2; i++) {
         [...component_selections_div[i].children[1].children].sort((a,b) => {
             if(Number.parseInt(a.dataset.component_tier) > Number.parseInt(b.dataset.component_tier)) {
@@ -2296,7 +2296,7 @@ function update_displayed_material_choice({category, subcategory, recipe_id, ref
     const recipe = recipes[category][subcategory][recipe_id];
 
     const material_selections_div = crafting_pages[category][subcategory].querySelector(`[data-recipe_id='${recipe_id}']`).children[1];
-    
+
     material_selections_div.innerHTML = "";
 
     const materials = Object.values(character.inventory).filter(item=>{
@@ -2351,8 +2351,8 @@ function update_item_recipe_visibility() {
 }
 
 /**
- * 
- * @param {LocationActivity} location_activity 
+ *
+ * @param {LocationActivity} location_activity
  */
 function create_gathering_tooltip(location_activity) {
     const gathering_tooltip = document.createElement("div");
@@ -2383,7 +2383,7 @@ function update_gathering_tooltip(current_activity) {
     if(!gathering_tooltip) {
         return;
     }
-    
+
     const {gathering_time_needed, gained_resources} = current_activity.getActivityEfficiency();
 
     let skill_names = "";
@@ -2414,7 +2414,7 @@ function update_displayed_stats() { //updates displayed stats
     Object.keys(stats_divs).forEach(function(key){
         if(key === "crit_rate" || key === "crit_multiplier") {
             stats_divs[key].innerHTML = `${(character.stats.full[key]*100).toFixed(1)}%`;
-        } 
+        }
         else if(key === "attack_speed") {
             stats_divs[key].innerHTML = `${(character.get_attack_speed()).toFixed(1)}`;
         }
@@ -2444,7 +2444,7 @@ function update_displayed_stats() { //updates displayed stats
         const ep = Math.round(character.stats.full.evasion_points);
         other_combat_divs.defensive_action.innerHTML = "EP : ";
         other_combat_divs.defensive_points.innerHTML = `${ep}`;
-        other_combat_divs.defensive_points.parentNode.children[2].children[0].innerHTML = 
+        other_combat_divs.defensive_points.parentNode.children[2].children[0].innerHTML =
         "Evasion points, a total value of everything that contributes to the evasion chance, except for some situational skills and modifiers";
 
         attack_stats.children[3].innerHTML = `EP: ${Math.round(ep)} `;
@@ -2465,17 +2465,17 @@ function update_stat_description(stat) {
     if(stats_divs[stat]){
         target = stats_divs[stat].parentNode.children[2].children[1];
     } else if(other_combat_divs[stat] && stat !== "defensive_action") {
-        target = other_combat_divs[stat].parentNode.children[2].children[1]; 
+        target = other_combat_divs[stat].parentNode.children[2].children[1];
     } else {
         return;
     }
 
     if(stat === "attack_power") {
-        target.innerHTML = 
+        target.innerHTML =
         `<br>Breakdown:
         <br>Base value (weapon * str/10): ${Math.round(100* character.stats.total_flat.attack_power)/100}`;
     } else if (stat === "attack_points"){
-        target.innerHTML = 
+        target.innerHTML =
         `<br>Breakdown:
         <br>Base value: ${Math.round(100* character.stats.total_flat.attack_points)/100}`;
     } else if(stat === "defensive_points"){
@@ -2484,11 +2484,11 @@ function update_stat_description(stat) {
         } else {
             stat = "evasion_points";
         }
-        target.innerHTML = 
+        target.innerHTML =
             `<br>Breakdown:
             <br>Base value: ${Math.round(100 * character.stats.total_flat[stat])/100}`;
     } else {
-        target.innerHTML = 
+        target.innerHTML =
         `<br>Breakdown:
         <br>Base value: ${Math.round(100*character.base_stats[stat])/100}`;
     }
@@ -2503,7 +2503,7 @@ function update_stat_description(stat) {
             target.innerHTML += `<br>${capitalize_first_letter(stat_type.replace("_"," "))}: x${Math.round(100*character.stats.multiplier[stat_type][stat])/100}`;
         }
     });
-    
+
     return;
 }
 
@@ -2541,8 +2541,8 @@ function update_displayed_time() {
     }
 }
 
-/** 
- * formats money to a nice string in form x..x G xx S xx C (gold/silver/copper) 
+/**
+ * formats money to a nice string in form x..x G xx S xx C (gold/silver/copper)
  * @param {Number} num value to be formatted
  * @param {Boolean} round if the value should be rounded a bit
  */
@@ -2550,7 +2550,7 @@ function format_money(num) {
     let value;
     const sign = num >= 0 ? '' : '-';
     num = Math.abs(num);
-    
+
     if(num > 0) {
         value = (num%10 != 0 ? `${num%10}<span class="coin coin_wood">W</span>` : '');
 
@@ -2561,8 +2561,8 @@ function format_money(num) {
                 if(num > 99999) {
                     value = `${Math.floor(num/100000)}<span class="coin coin_gold">G</span> ` + value;
                 }
-            
-            }  
+
+            }
         }
 
         return sign + value;
@@ -2599,9 +2599,9 @@ function update_displayed_stamina_efficiency() {
 
 function update_displayed_dialogue(dialogue_key) {
     const dialogue = dialogues[dialogue_key];
-    
+
     clear_action_div();
-    
+
     const dialogue_answer_div = document.createElement("div");
     dialogue_answer_div.id = "dialogue_answer_div";
     action_div.appendChild(dialogue_answer_div);
@@ -2613,7 +2613,7 @@ function update_displayed_dialogue(dialogue_key) {
                     }
                     if(dialogue.textlines[key].required_flags.yes) {
                         for(let i = 0; i < dialogue.textlines[key].required_flags.yes.length; i++) {
-                            
+
                             if(!global_flags[dialogue.textlines[key].required_flags.yes[i]]) {
                                 return;
                             }
@@ -2627,7 +2627,7 @@ function update_displayed_dialogue(dialogue_key) {
                         }
                     }
                 }
-                
+
                 const textline_div = document.createElement("div");
                 textline_div.innerHTML = `"${dialogue.textlines[key].name}"`;
                 textline_div.classList.add("dialogue_textline");
@@ -2717,10 +2717,10 @@ function start_activity_display(current_activity) {
         action_div.appendChild(action_progress_bar_max);
         action_progress_bar_max.appendChild(create_gathering_tooltip(current_activity));
     }
-    
+
     action_div.appendChild(action_end_div);
 
-    if(activities[current_activity.activity_name].type === "JOB") 
+    if(activities[current_activity.activity_name].type === "JOB")
     {
         const time_info_div = document.createElement("div");
         time_info_div.id = "time_for_earnings_div";
@@ -2741,7 +2741,7 @@ function update_displayed_ongoing_activity(current_activity, is_job){
     if(is_job) {
         document.getElementById("action_end_earnings").innerHTML = `(earnings: ${format_money(current_activity.earnings)})`
         const time_info_div = document.getElementById("time_for_earnings_div");
-        
+
         if(!enough_time_for_earnings(current_activity)) {
             time_info_div.innerHTML = `There's not enough time left to earn more, but ${character.name} might still learn something...`;
         } else {
@@ -2750,7 +2750,7 @@ function update_displayed_ongoing_activity(current_activity, is_job){
     }
     const action_xp_div = document.getElementById("action_xp_div");
     const needed_xp = skills[activities[current_activity.activity_name].base_skills_names].current_level == skills[activities[current_activity.activity_name].base_skills_names].max_level? "Max": `${Math.round(10000*skills[activities[current_activity.activity_name].base_skills_names].current_xp/skills[activities[current_activity.activity_name].base_skills_names].xp_to_next_lvl)/100}%`
-    
+
     if(activities[current_activity.activity_name].type !== "GATHERING") {
         action_xp_div.innerText = `Getting ${current_activity.skill_xp_per_tick} base xp per in-game minute to ${skills[activities[current_activity.activity_name].base_skills_names].name()} (${needed_xp})`;
     } else {
@@ -2777,7 +2777,7 @@ function start_sleeping_display(){
     action_end_text.innerText = `Wake up`;
     action_end_text.id = "action_end_text";
 
-    
+
     action_end_div.appendChild(action_end_text);
 
     action_div.appendChild(action_status_div);
@@ -2810,7 +2810,7 @@ function start_reading_display(title) {
 
 /**
  * //creates new skill bar
- * @param {Skill} skill 
+ * @param {Skill} skill
  */
 function create_new_skill_bar(skill) {
     if(!skill_bar_divs[skill.category]) {
@@ -2824,7 +2824,7 @@ function create_new_skill_bar(skill) {
         const skill_category_skills = document.createElement("div");
         skill_category_skills.dataset.skill_category_skills = true;
         skill_category_div.appendChild(skill_category_skills);
-        
+
         skill_list.appendChild(skill_category_div);
 
         skill_category_div.addEventListener("click", (event)=>{
@@ -2853,7 +2853,7 @@ function create_new_skill_bar(skill) {
     const tooltip_effect = document.createElement("div");
     const tooltip_milestones = document.createElement("div");
     const tooltip_next = document.createElement("div");
-    
+
     skill_bar_max.classList.add("skill_bar_max");
     skill_bar_current.classList.add("skill_bar_current");
     skill_bar_text.classList.add("skill_bar_text");
@@ -2870,7 +2870,7 @@ function create_new_skill_bar(skill) {
     skill_tooltip.appendChild(tooltip_xp);
     skill_tooltip.appendChild(tooltip_xp_gain);
     skill_tooltip.appendChild(tooltip_desc);
-    skill_tooltip.appendChild(tooltip_effect); 
+    skill_tooltip.appendChild(tooltip_effect);
     skill_tooltip.appendChild(tooltip_milestones);
     skill_tooltip.appendChild(tooltip_next);
 
@@ -2879,9 +2879,9 @@ function create_new_skill_bar(skill) {
         tooltip_desc.innerHTML += `<br><br>`;
     }
     if(skill.parent_skill) {
-        tooltip_desc.innerHTML += `Parent skill: ${skill.parent_skill}<br><br>`; 
+        tooltip_desc.innerHTML += `Parent skill: ${skill.parent_skill}<br><br>`;
     }
-    
+
     skill_bar_max.appendChild(skill_bar_text);
     skill_bar_max.appendChild(skill_bar_current);
     skill_bar_max.appendChild(skill_tooltip);
@@ -2899,13 +2899,13 @@ function create_new_skill_bar(skill) {
 
 function update_displayed_skill_bar(skill, leveled_up=true) {
     /*
-    skill_bar divs: 
-        skill -> children (1): 
-            skill_bar_max -> children(3): 
+    skill_bar divs:
+        skill -> children (1):
+            skill_bar_max -> children(3):
                 skill_bar_text -> children(2):
                     skill_bar_name,
                     skill_bar_xp
-                skill_bar_current, 
+                skill_bar_current,
                 skill_tooltip -> children(5):
                     tooltip_xp,
                     tooltip_xp_gain,
@@ -2950,7 +2950,7 @@ function update_displayed_skill_bar(skill, leveled_up=true) {
         skill_bar_divs[skill.category][skill.skill_id].children[0].children[2].children[3].innerHTML = `${skill.get_effect_description()}`;
         //tooltip_effect
     }
-    
+
     if(leveled_up) {
         sort_displayed_skills({sort_by: skill_sorting}); //in case of a name change on levelup
     }
@@ -3002,7 +3002,7 @@ function sort_displayed_skills({sort_by="name", change_direction=false}) {
     let plus = skill_sorting_direction=="asc"?1:-1;
     let minus = skill_sorting_direction==="asc"?-1:1;
     for(let i = 0; i < skill_list.children.length; i++) {
-        
+
         [...skill_list.children[i].querySelector("[data-skill_category_skills").children].sort((a,b) => {
             let elem_a;
             let elem_b;
@@ -3015,14 +3015,14 @@ function sort_displayed_skills({sort_by="name", change_direction=false}) {
                 elem_b = skills[b.getAttribute("data-skill")].name();
                 skill_sorting = "name";
             }
-    
+
             if(elem_a > elem_b) {
                 return plus;
             } else {
                 return minus;
             }
-    
-    
+
+
         }).forEach(node=>skill_list.children[i].querySelector("[data-skill_category_skills").appendChild(node));
     }
 }
@@ -3041,7 +3041,7 @@ function sort_displayed_skill_categories() {
 }
 
 /**
- * @description updates the list of stances, 
+ * @description updates the list of stances,
  */
 function update_displayed_stance_list() {
     while(stance_list.firstChild) {
@@ -3051,7 +3051,7 @@ function update_displayed_stance_list() {
         delete stance_bar_divs[bar];
     })
 
-    stance_list.innerHTML = 
+    stance_list.innerHTML =
     `<tr class="stance_list_entry stance_list_header">
         <th class="stance_list_header stance_list_header_fav">Fav</th>
         <th class="stance_list_header stance_list_header_select">Select</th>
@@ -3066,15 +3066,15 @@ function update_displayed_stance_list() {
 
             const fav_selection = `<td class="stances_button stances_button_checkbox"><input type="checkbox" id="stances_fav_${stance}" name="stance_fav_selection" onclick="fav_stance('${stance}')"></td>`;
             const stance_selection = `<td class="stances_button stances_button_radio"><input type="radio" id="stances_select_${stance}" name="stance_list_selection" onclick="select_stance('${stance}')"></td>`;
-            const stance_info = 
+            const stance_info =
                 `<td class="stances_name"><label for="stances_select_${stance}">${stances[stance].name}</td>`
 
             stance_bar_divs[stance].innerHTML = fav_selection;
             stance_bar_divs[stance].innerHTML += stance_selection;
             stance_bar_divs[stance].innerHTML += stance_info
-            
+
             const stance_tooltip_row = document.createElement("td");
-            
+
             stance_tooltip_row.appendChild(create_stance_tooltip(stance));
             stance_bar_divs[stance].appendChild(stance_tooltip_row);
             stance_list.append(stance_bar_divs[stance]);
@@ -3094,7 +3094,7 @@ function update_displayed_stance_list() {
         if(!stance_a || !stance_b || !stance_a.is_unlocked || !stance_b.is_unlocked) {
             console.error(`No such stance as either '${stance_a}' or '${stance_b}', or at least one of them is not yet unlocked!`);
         }
-        
+
         if(stance_a.stamina_cost < stance_b.stamina_cost) {
             return -1;
         } else if(stance_a.stamina_cost > stance_b.stamina_cost) {
@@ -3116,7 +3116,7 @@ function update_displayed_stance_list() {
 function create_stance_tooltip(stance_id) {
     const tooltip_div = document.createElement("div");
     tooltip_div.classList.add("stance_tooltip");
-    tooltip_div.innerHTML = 
+    tooltip_div.innerHTML =
     `<div>${stances[stance_id].name}</div><br>
     <div>${stances[stance_id].getDescription()}</div><br>
     <div>Stamina cost: ${stances[stance_id].stamina_cost}</div>
@@ -3154,7 +3154,7 @@ function update_stance_tooltip(stance_id) {
             target_count = target_count + Math.round(target_count * skills[stances[stance_id].related_skill].current_level/skills[stances[stance_id].related_skill].max_level);
         }
         stance_bar_divs[stance_id].querySelector(".stance_tooltip_hitcount").innerHTML = `${stances[stance_id].randomize_target_count?"Randomly hits up to":"Hits up to"} ${target_count} enemies</div>`;
-    } 
+    }
 }
 
 function update_displayed_stance() {
@@ -3168,13 +3168,13 @@ function update_displayed_stance() {
 }
 
 function update_displayed_faved_stances() {
-    
+
     const list = document.getElementById("character_stance_selection");
     list.innerHTML = "";
     Object.keys(faved_stances).forEach(stance => {
         stance_bar_divs[stance].children[0].children[0].checked = true;
 
-        const node = 
+        const node =
         `<div data-stance="${stance}"><input type="radio" id="stances_quick_select_${stance}" name="stance_quick_selection" onclick="select_stance('${stance}')">
          <label for="stances_quick_select_${stance}">${stances[stance].name}</div>`;
         list.innerHTML += node;
@@ -3189,7 +3189,7 @@ function update_displayed_faved_stances() {
         if(!stance_a || !stance_b || !stance_a.is_unlocked || !stance_b.is_unlocked) {
             console.error(`No such stance as either '${stance_a}' or '${stance_b}', or at least one of them is not yet unlocked!`);
         }
-        
+
         if(stance_a.stamina_cost < stance_b.stamina_cost) {
             return -1;
         } else if(stance_a.stamina_cost > stance_b.stamina_cost) {
@@ -3214,11 +3214,11 @@ function update_displayed_faved_stances() {
 /**
  * creates a new bestiary entry;
  * called when a new enemy is killed (or, you know, loading a save)
- * @param {String} enemy_name 
+ * @param {String} enemy_name
  */
 function create_new_bestiary_entry(enemy_name) {
     bestiary_entry_divs[enemy_name] = document.createElement("div");
-    
+
     const enemy = enemy_templates[enemy_name];
 
     const name_div = document.createElement("div");
@@ -3227,7 +3227,7 @@ function create_new_bestiary_entry(enemy_name) {
     const kill_counter = document.createElement("div");
     kill_counter.innerHTML = enemy_killcount[enemy_name];
     kill_counter.classList.add("bestiary_entry_kill_count");
-    
+
 
     const bestiary_tooltip = document.createElement("div");
     const tooltip_xp = document.createElement("div"); //base xp enemy gives
@@ -3332,7 +3332,7 @@ function create_new_bestiary_entry(enemy_name) {
     stat_5.append(stat_5_name, stat_5_value);
     stat_line_4.append(stat_4, stat_5);
 
-    
+
     tooltip_stats.appendChild(stat_line_0);
     tooltip_stats.appendChild(stat_line_2);
     tooltip_stats.appendChild(stat_line_4);
@@ -3384,7 +3384,7 @@ function create_new_bestiary_entry(enemy_name) {
     }
 
     bestiary_tooltip.classList.add("bestiary_entry_tooltip");
-    
+
     bestiary_tooltip.appendChild(tooltip_desc);
     bestiary_tooltip.appendChild(tooltip_xp);
     bestiary_tooltip.appendChild(tooltip_tags);
@@ -3406,7 +3406,7 @@ function create_new_bestiary_entry(enemy_name) {
 
 /**
  * updates the bestiary entry of an enemy, that is killcount and on-hover droprates
- * @param {String} enemy_name 
+ * @param {String} enemy_name
  */
 function update_bestiary_entry(enemy_name) {
     bestiary_entry_divs[enemy_name].children[1].innerHTML = enemy_killcount[enemy_name];
@@ -3470,7 +3470,7 @@ function update_other_save_load_button(date_string, is_dev) {
         other_save_load_button.style.color = "gray";
         other_save_load_button.style.cursor = "not-allowed";
     }
-    
+
 }
 
 /**
@@ -3531,7 +3531,7 @@ export {
     exit_displayed_trade,
     start_activity_display,
     start_sleeping_display,
-    create_new_skill_bar, update_displayed_skill_bar, update_displayed_skill_description, 
+    create_new_skill_bar, update_displayed_skill_bar, update_displayed_skill_description,
     update_displayed_skill_xp_gain,
     update_all_displayed_skills_xp_gain,
     clear_skill_bars,

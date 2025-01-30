@@ -2,9 +2,9 @@
 
 import { InventoryHaver } from "./inventory.js";
 import { skills, weapon_type_to_skill } from "./skills.js";
-import { update_displayed_character_inventory, update_displayed_equipment, 
+import { update_displayed_character_inventory, update_displayed_equipment,
          update_displayed_stats,
-         update_displayed_health, update_displayed_stamina, 
+         update_displayed_health, update_displayed_stamina,
          update_displayed_skill_xp_gain, update_all_displayed_skills_xp_gain,
          update_displayed_xp_bonuses } from "./display.js";
 import { active_effects, current_location, current_stance } from "./main.js";
@@ -23,7 +23,7 @@ const character = new Hero();
 character.name = "Hero";
 character.titles = {};
 character.base_stats = {
-        max_health: 40, 
+        max_health: 40,
         health: 40,
         health_regeneration_flat: 0, //in combat
         health_regeneration_percent: 0, //in combat
@@ -37,21 +37,21 @@ character.base_stats = {
         mana_regeneration_flat: 0, //in combat
         mana_regeneration_percent: 0, //in combat
         mana_efficiency: 1,
-        strength: 10, 
-        agility: 10, 
-        dexterity: 10, 
+        strength: 10,
+        agility: 10,
+        dexterity: 10,
         intuition: 10,
-        magic: 0, 
-        attack_speed: 1, 
-        crit_rate: 0.05, 
+        magic: 0,
+        attack_speed: 1,
+        crit_rate: 0.05,
         crit_multiplier: 1.3,
-        attack_power: 0, 
+        attack_power: 0,
         defense: 0,
         block_strength: 0,
         block_chance: 0,
         evasion_points: 0, //EP
         attack_points: 0, //AP
-        
+
 };
 
 character.stats = {};
@@ -95,13 +95,13 @@ character.xp_bonuses.multiplier = {
 };
 
 character.equipment = {
-        head: null, torso: null, 
-        arms: null, ring: null, 
+        head: null, torso: null,
+        arms: null, ring: null,
         weapon: null, "off-hand": null,
-        legs: null, feet: null, 
+        legs: null, feet: null,
         amulet: null, artifact: null,
 
-        axe: null, 
+        axe: null,
         pickaxe: null,
         sickle: null,
 };
@@ -109,7 +109,7 @@ character.money = 0;
 
 const base_xp_cost = 10;
 character.xp = {
-        current_level: 0, total_xp: 0, current_xp: 0, xp_to_next_lvl: base_xp_cost, 
+        current_level: 0, total_xp: 0, current_xp: 0, xp_to_next_lvl: base_xp_cost,
         total_xp_to_next_lvl: base_xp_cost, base_xp_cost: base_xp_cost, xp_scaling: 1.8
 };
 character.starting_xp = character.xp;
@@ -125,10 +125,10 @@ character.add_xp = function ({xp_to_add, use_bonus = true}) {
         }
         else { //levelup
                 let level_after_xp = 0;
-                
+
                 while(character.xp.total_xp >= character.xp.total_xp_to_next_lvl) {
                         level_after_xp += 1;
-                        
+
                         character.xp.total_xp_to_next_lvl = Math.round(character.xp.base_xp_cost * (1 - character.xp.xp_scaling ** (level_after_xp + 1))/(1 - character.xp.xp_scaling));
                 } //calculates lvl reached after adding xp
 
@@ -139,15 +139,15 @@ character.add_xp = function ({xp_to_add, use_bonus = true}) {
 
                 character.xp.xp_to_next_lvl = character.xp.total_xp_to_next_lvl - total_xp_to_previous_lvl;
                 character.xp.current_level = level_after_xp;
-                character.xp.current_xp = character.xp.total_xp - total_xp_to_previous_lvl;		
-                
+                character.xp.current_xp = character.xp.total_xp - total_xp_to_previous_lvl;
+
                 return `${character.name} is getting stronger. Reached level ${character.xp.current_level} ${gains}`;
         }
 }
 
 /**
  * gets bonuses to stats based on current level and level passed as param
- * @param {Number} level 
+ * @param {Number} level
  * @returns stats bonuses from leveling
  */
 character.get_level_bonus = function (level) {
@@ -202,14 +202,14 @@ character.get_level_bonus = function (level) {
         }
 
         gains += `<br>Skill xp gains increased by ${Math.round((gained_skill_xp_multiplier-1)*100)}%`;
-        
+
         return gains;
 }
 
 /**
  * adds skill milestone bonuses to character stats
  * called when a new milestone is reached
- * @param {{flats, multipliers}} bonuses 
+ * @param {{flats, multipliers}} bonuses
  */
 character.stats.add_skill_milestone_bonus = function ({stats = {}, xp_multipliers = {}}) {
         Object.keys(stats).forEach(stat => {
@@ -241,7 +241,7 @@ character.stats.add_skill_milestone_bonus = function ({stats = {}, xp_multiplier
 /**
  * adds skill milestone bonuses to character stats
  * called when a new milestone is reached
- * @param {{flats, multipliers}} bonuses 
+ * @param {{flats, multipliers}} bonuses
  */
 character.stats.add_book_bonus = function ({multipliers = {}, xp_multipliers = {}}) {
         Object.keys(character.base_stats).forEach(stat => {
@@ -249,7 +249,7 @@ character.stats.add_book_bonus = function ({multipliers = {}, xp_multipliers = {
                         character.stats.multiplier.books[stat] = (character.stats.multiplier.books[stat] || 1) * multipliers[stat];
                 }
         });
-       
+
         if(xp_multipliers?.hero) {
                 character.xp_bonuses.multiplier.skills.hero = (character.xp_bonuses.multiplier.skills.hero || 1) * xp_multipliers.hero;
         }
@@ -288,7 +288,7 @@ character.stats.add_active_effect_bonus = function() {
  * called on equipment changes
  */
 character.stats.add_all_equipment_bonus = function() {
-        
+
         //reset as they will be recalculated
         character.stats.flat.equipment = {};
         character.stats.multiplier.equipment = {};
@@ -298,7 +298,7 @@ character.stats.add_all_equipment_bonus = function() {
                 if(!character.equipment[slot]) {
                         return;
                 }
-                
+
                 if(character.equipment[slot].getDefense) {
                         character.stats.flat.equipment.defense = (character.stats.flat.equipment.defense || 0) + character.equipment[slot].getDefense();
                 }
@@ -343,14 +343,14 @@ character.stats.add_all_skill_level_bonus = function() {
         character.stats.multiplier.skills.strength = skills["Weightlifting"].get_coefficient("multiplicative");
         character.stats.multiplier.skills.block_strength = 1 + 5*skills["Shield blocking"].get_level_bonus();
         character.stats.multiplier.skills.agility = skills["Equilibrium"].get_coefficient("multiplicative");
-        
+
         character.stats.add_weapon_type_bonuses();
 }
 
 /**
  * add all stat bonuses/penalties from stances
  * called in update_stats()
- * multipliers only 
+ * multipliers only
  */
 character.stats.add_all_stance_bonus = function() {
         const multipliers = stances[current_stance].getStats();
@@ -369,7 +369,7 @@ character.stats.add_all_stance_bonus = function() {
 character.stats.add_location_penalties = function() {
         let effects = {};
         let light_modifier = 1;
-        
+
         if(current_location) {
                 if(!("connected_locations" in current_location)) {
                         effects = current_location.get_total_effect().hero_penalty.multipliers;
@@ -395,9 +395,9 @@ character.stats.add_location_penalties = function() {
  * full stat recalculation, call whenever something changes
  */
 character.update_stats = function () {
-    const missing_health = Math.max((character.stats.full["max_health"] - character.stats.full["health"]), 0) || 0;   
-    const missing_stamina = Math.max((character.stats.full["max_stamina"] - character.stats.full["stamina"]), 0) || 0;   
-    const missing_mana = Math.max((character.stats.full["max_mana"] - character.stats.full["mana"]), 0) || 0;   
+    const missing_health = Math.max((character.stats.full["max_health"] - character.stats.full["health"]), 0) || 0;
+    const missing_stamina = Math.max((character.stats.full["max_stamina"] - character.stats.full["stamina"]), 0) || 0;
+    const missing_mana = Math.max((character.stats.full["max_mana"] - character.stats.full["mana"]), 0) || 0;
     //to avoid fully restoring all whenever this function is called
 
     character.stats.add_all_skill_level_bonus();
@@ -439,17 +439,17 @@ character.update_stats = function () {
         }
     });
 
-     
-    if(character.equipment.weapon != null) { 
+
+    if(character.equipment.weapon != null) {
         character.stats.full.attack_power = (character.stats.full.strength/10) * character.equipment.weapon.getAttack() * character.stats.total_multiplier.attack_power;
-    } 
+    }
     else {
         character.stats.full.attack_power = (character.stats.full.strength/10) * character.stats.total_multiplier.attack_power;
     }
-    
+
     character.stats.total_flat.attack_power = character.stats.full.attack_power/character.stats.total_multiplier.attack_power;
     Object.keys(character.xp_bonuses.total_multiplier).forEach(bonus_target => {
-        character.xp_bonuses.total_multiplier[bonus_target] = (character.xp_bonuses.multiplier.levels[bonus_target] || 1) * (character.xp_bonuses.multiplier.skills[bonus_target] || 1) * (character.xp_bonuses.multiplier.books[bonus_target] || 1); 
+        character.xp_bonuses.total_multiplier[bonus_target] = (character.xp_bonuses.multiplier.levels[bonus_target] || 1) * (character.xp_bonuses.multiplier.skills[bonus_target] || 1) * (character.xp_bonuses.multiplier.books[bonus_target] || 1);
         //only this two sources as of now
 
         const bonus = character.xp_bonuses.total_multiplier[bonus_target];
@@ -501,9 +501,9 @@ character.wears_armor = function () {
 }
 
 /**
- * 
+ *
  * @param {*}
- * @returns [actual damage taken; Boolean if character should faint] 
+ * @returns [actual damage taken; Boolean if character should faint]
  */
 character.take_damage = function ({damage_value, can_faint = true, give_skill_xp = true}) {
         /*
@@ -544,7 +544,7 @@ character.get_character_money = function () {
 }
 
 /**
- * @param {Array} items [{item, count},...] 
+ * @param {Array} items [{item, count},...]
  */
 function add_to_character_inventory(items) {
         const was_anything_new_added = character.add_to_inventory(items);
@@ -578,7 +578,7 @@ function equip_item(item) {
         update_displayed_equipment();
         update_displayed_character_inventory();
         character.stats.add_all_equipment_bonus();
-        
+
         update_character_stats();
 }
 
@@ -592,11 +592,11 @@ function equip_item(item) {
             // -> id and name tell which exactly item it is, then also check slot in item object and thats all whats needed
             equip_item(character.inventory[item_key].item);
             remove_from_character_inventory([{item_key}]);
-            
+
             update_character_stats();
         }
 }
-    
+
 function unequip_item(item_slot) {
         if(character.equipment[item_slot] != null) {
                 add_to_character_inventory([{item: character.equipment[item_slot]}]);
@@ -614,7 +614,7 @@ function add_location_penalties() {
 }
 
 /**
- * updates character stats + their display 
+ * updates character stats + their display
  */
 function update_character_stats() {
         character.stats.add_location_penalties();
@@ -623,7 +623,7 @@ function update_character_stats() {
         update_displayed_stats();
         update_displayed_health();
         update_displayed_stamina();
-        
+
         //update_displayed_mana();
 }
 
@@ -643,5 +643,5 @@ function get_hero_xp_gain() {
         return (character.xp_bonuses.total_multiplier.hero || 1) * (character.xp_bonuses.total_multiplier.all || 1)
 }
 
-export {character, add_to_character_inventory, remove_from_character_inventory, equip_item_from_inventory, equip_item, 
+export {character, add_to_character_inventory, remove_from_character_inventory, equip_item_from_inventory, equip_item,
         unequip_item, update_character_stats, get_skill_xp_gain, get_hero_xp_gain, get_skills_overall_xp_gain, add_location_penalties};
